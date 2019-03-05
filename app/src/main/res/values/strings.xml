@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">IP Scan</string>
+    <string name="ip_from">IPs from:</string>
+    <string name="ip_to">IPs to:</string>
+    <string name="ip_et_hint">255</string>
+    <string name="start_scan">Start scan</string>
+</resources>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_md"
+        android:layout_marginTop="@dimen/margin_md"
+        android:text="@string/ip_from"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etFrom1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFrom"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="@+id/tvFrom"
+        tools:text="255"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/etFrom2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etFrom1"
+        app:layout_constraintStart_toEndOf="@+id/etFrom1"
+        app:layout_constraintTop_toTopOf="@+id/etFrom1"
+        tools:text="255"
+        android:importantForAutofill="no" />
+
+
+    <EditText
+        android:id="@+id/etFrom3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etFrom2"
+        app:layout_constraintStart_toEndOf="@+id/etFrom2"
+        app:layout_constraintTop_toTopOf="@+id/etFrom2"
+        tools:text="255"
+        android:importantForAutofill="no" />
+
+
+    <EditText
+        android:id="@+id/etFrom4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etFrom3"
+        app:layout_constraintStart_toEndOf="@+id/etFrom3"
+        app:layout_constraintTop_toTopOf="@+id/etFrom3"
+        tools:text="255"
+        android:importantForAutofill="no" />
+
+
+    <TextView
+        android:id="@+id/tvTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_md"
+        android:layout_marginTop="@dimen/margin_md"
+        android:text="@string/ip_to"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFrom" />
+
+    <EditText
+        android:id="@+id/etTo1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/tvTo"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toTopOf="@+id/tvTo"
+        tools:text="255"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/etTo2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etTo1"
+        app:layout_constraintStart_toEndOf="@+id/etTo1"
+        app:layout_constraintTop_toTopOf="@+id/etTo1"
+        tools:text="255"
+        android:importantForAutofill="no"/>
+
+    <EditText
+        android:id="@+id/etTo3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etTo2"
+        app:layout_constraintStart_toEndOf="@+id/etTo2"
+        app:layout_constraintTop_toTopOf="@+id/etTo2"
+        tools:text="255"
+        android:importantForAutofill="no"/>
+
+
+    <EditText
+        android:id="@+id/etTo4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:hint="@string/ip_et_hint"
+        android:inputType="number"
+        android:maxLength="3"
+        app:layout_constraintBottom_toBottomOf="@+id/etTo3"
+        app:layout_constraintStart_toEndOf="@+id/etTo3"
+        app:layout_constraintTop_toTopOf="@+id/etTo3"
+        tools:text="255"
+        android:importantForAutofill="no"/>
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="tvFrom,tvTo" />
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
+        android:text="@string/start_scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTo" />
+
+    <TextView
+        android:id="@+id/tvWhat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnScan"
+        tools:text="scanning 192.168.1.1:80"/>
+
+    <TextView
+        android:id="@+id/tvTotalCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWhat"
+        tools:text="total: 8886/10000"/>
+
+</android.support.constraint.ConstraintLayout>
