@@ -23,7 +23,7 @@ public class HostRangeActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_host_range);
 
-        bindUi();
+    bindUi();
     setupUi();
 
     h = new Handler() {
