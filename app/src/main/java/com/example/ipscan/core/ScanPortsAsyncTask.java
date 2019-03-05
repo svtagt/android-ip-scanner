@@ -2,6 +2,8 @@ package com.example.ipscan.core;
 
 import android.os.AsyncTask;
 
+import com.example.ipscan.utils.Const;
+
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,7 +38,7 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
     HostAsyncResponse activity = delegate.get();
     if (activity != null) {
       //TODO: don't use fixed value
-      final int NUM_THREADS = 500;
+      final int NUM_THREADS = Const.NUM_THREADS;
 
       try {
         InetAddress address = InetAddress.getByName(ip);
