@@ -1,71 +1,52 @@
 package com.example.ipscan;
 
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-
-import java.util.concurrent.TimeUnit;
+import android.widget.RadioButton;
 
 public class MainActivity extends AppCompatActivity {
-  private Handler h;
-  private TextView tvWhat;
-  private TextView tvTotalCount;
-  private Button btnScan;
-  public static final String LOG_TAG = "IPSCAN";
+  private Class targetActivityClass;
+
+  private Button btnNext;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    bindUi();
     setupUi();
-
-    h = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-        // обновляем TextView
-        tvWhat.setText("Закачано файлов: " + msg.what);
-        if (msg.what == 10) btnScan.setEnabled(true);
-      }
-    };
-  }
-
-  private void bindUi() {
-    tvWhat = findViewById(R.id.tvWhat);
-    tvTotalCount = findViewById(R.id.tvTotalCount);
-    btnScan = findViewById(R.id.btnScan);
+    bindUi();
   }
 
   private void setupUi() {
-    btnScan.setOnClickListener(l -> {
-      btnScan.setEnabled(false);
-      Thread t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          for (int i = 1; i <= 10; i++) {
-            // долгий процесс
-            downloadFile();
-            h.sendEmptyMessage(i);
-            // пишем лог
-            Log.d(LOG_TAG, "i = " + i);
-          }
-        }
-      });
-      t.start();
+    btnNext = findViewById(R.id.btnNext);
+  }
+
+  private void bindUi() {
+    btnNext.setOnClickListener(l -> {
+      if (targetActivityClass != null) {
+        startActivity(new Intent(MainActivity.this, targetActivityClass));
+      }
     });
   }
 
-  private void downloadFile() {
-    // пауза - 1 секунда
-    try {
-      TimeUnit.SECONDS.sleep(1);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+  public void onRadioButtonClicked(View view) {
+    boolean checked = ((RadioButton) view).isChecked();
+    btnNext.setEnabled(true);
+    switch(view.getId()) {
+      case R.id.rbSingleHost:
+        if (checked){
+          targetActivityClass = SingleHostActivity.class;
+        }
+        break;
+      case R.id.rbHostRange:
+        if (checked){
+          targetActivityClass = HostRangeActivity.class;
+        }
+        break;
     }
   }
 }

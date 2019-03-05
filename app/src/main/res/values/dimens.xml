@@ -1,3 +1,4 @@
 <resources>
     <dimen name="margin_md">20dp</dimen>
+    <dimen name="margin_sm">10dp</dimen>
 </resources>
