@@ -14,8 +14,12 @@ import android.widget.TextView;
 import com.example.ipscan.core.HostAsyncResponse;
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.utils.Const;
+import com.stealthcopter.networktools.PortScan;
 
-public class SingleHostActivity extends AppCompatActivity{
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+
+public class SingleHostActivity extends AppCompatActivity {
   final int STATUS_NONE = 0;
   final int STATUS_SCANNING_IN_PROGRESS = 1;
   final int STATUS_SCANNING_DONE = 2;
@@ -24,6 +28,7 @@ public class SingleHostActivity extends AppCompatActivity{
   private NumberPicker numpStartPort;
   private NumberPicker numpEndPort;
   private Button btnStart;
+  private Button btnStart1;
   private String resultStr;
   private TextView tvStatus;
   private TextView tvDuration;
@@ -52,7 +57,6 @@ public class SingleHostActivity extends AppCompatActivity{
             break;
           }
           case STATUS_SCANNING_IN_PROGRESS: {
-            btnStart.setEnabled(false);
             tvStatus.setText("Wait....");
             startTime = System.nanoTime();
             Log.d(Const.LOG_TAG, "startTime: " + startTime);
@@ -64,14 +68,18 @@ public class SingleHostActivity extends AppCompatActivity{
             Log.d(Const.LOG_TAG, "finishTime: " + finishTime);
             duration = (finishTime - startTime);
             btnStart.setEnabled(true);
+            btnStart1.setEnabled(true);
             btnStart.setText(R.string.start_scan);
+            btnStart1.setText(R.string.start_way_2);
             tvStatus.setText(resultStr);
-            tvDuration.setText("Finished at " + duration/1000000 + " ms");
+            tvDuration.setText("Finished at " + duration / 1000000 + " ms");
             tvDuration.setVisibility(View.VISIBLE);
             break;
           }
         }
-      };
+      }
+
+      ;
     };
     h.sendEmptyMessage(STATUS_NONE);
   }
@@ -81,6 +89,7 @@ public class SingleHostActivity extends AppCompatActivity{
     numpStartPort = findViewById(R.id.numpStartPort);
     numpEndPort = findViewById(R.id.numpEndPort);
     btnStart = findViewById(R.id.btnStart);
+    btnStart1 = findViewById(R.id.btnStart1);
     tvStatus = findViewById(R.id.tvStatus);
     tvDuration = findViewById(R.id.tvDuration);
   }
@@ -100,7 +109,8 @@ public class SingleHostActivity extends AppCompatActivity{
       resultStr = "Open ports: ";
       btnStart.setText(R.string.please_wait);
       btnStart.setEnabled(false);
-      Log.d(Const.LOG_TAG,etUrlOrIp.getText().toString());
+      btnStart1.setEnabled(false);
+      Log.d(Const.LOG_TAG, etUrlOrIp.getText().toString());
       Log.d(Const.LOG_TAG, String.valueOf(numpStartPort.getValue()));
       Log.d(Const.LOG_TAG, String.valueOf(numpEndPort.getValue()));
 
@@ -129,11 +139,50 @@ public class SingleHostActivity extends AppCompatActivity{
           String item = String.valueOf(scannedPort);
 
           Log.d(Const.LOG_TAG, "scannedPort: " + scannedPort);
-          Log.d(Const.LOG_TAG, "item: " + item);
-
           resultStr = resultStr + item + " ";
         }
       });
+    });
+
+    btnStart1.setOnClickListener(l -> {
+      resultStr = "Open ports: ";
+      btnStart1.setText(R.string.please_wait);
+      btnStart.setEnabled(false);
+      btnStart1.setEnabled(false);
+
+      h.sendEmptyMessage(STATUS_SCANNING_IN_PROGRESS);
+      // Asynchronously
+
+      Thread t = new Thread(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            PortScan.onAddress(etUrlOrIp.getText().toString())
+              .setPorts(numpStartPort.getValue() + "-" + numpEndPort.getValue())
+              .setMethodTCP()
+              .doScan(new PortScan.PortListener() {
+                @Override
+                public void onResult(int portNo, boolean open) {
+                  Log.d(Const.LOG_TAG, "portNo: " + portNo);
+                  if (open) {
+                    Log.d(Const.LOG_TAG, "portNo: " + portNo + "open!!!");
+                    resultStr = resultStr + portNo + " ";
+                  }
+                }
+
+                @Override
+                public void onFinished(ArrayList<Integer> openPorts) {
+                  // Stub: Finished scanning
+                  h.sendEmptyMessage(STATUS_SCANNING_DONE);
+                }
+              });
+          } catch (UnknownHostException e) {
+            e.printStackTrace();
+          }
+        }
+      });
+
+      t.start();
     });
   }
 }

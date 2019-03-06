@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.ipscan.core.IPAddress;
+
 import java.util.concurrent.TimeUnit;
 
 public class HostRangeActivity extends AppCompatActivity {
@@ -26,14 +28,15 @@ public class HostRangeActivity extends AppCompatActivity {
     bindUi();
     setupUi();
 
-    h = new Handler() {
-      @Override
-      public void handleMessage(Message msg) {
-        // обновляем TextView
-        tvWhat.setText("Scanned: " + msg.what);
-        if (msg.what == 10) btnScan.setEnabled(true);
-      }
-    };
+    IPAddress ip1 = new IPAddress("192.168.0.1");
+    System.out.println("ip1 = " + ip1);
+    IPAddress ip2 = new IPAddress("192.168.0.255");
+    System.out.println("ip2 = " + ip2);
+    System.out.println("Looping:");
+    do {
+      ip1 = ip1.next();
+      System.out.println(ip1);
+    } while (!ip1.equals(ip2));
   }
 
   private void bindUi() {
@@ -44,30 +47,7 @@ public class HostRangeActivity extends AppCompatActivity {
 
   private void setupUi() {
     btnScan.setOnClickListener(l -> {
-      btnScan.setEnabled(false);
-      Thread t = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          for (int i = 1; i <= 10; i++) {
-            // долгий процесс
-            downloadFile();
-            h.sendEmptyMessage(i);
-            // пишем лог
-            Log.d(LOG_TAG, "i = " + i);
-          }
-        }
-      });
-      t.start();
+
     });
   }
-
-  private void downloadFile() {
-    // пауза - 1 секунда
-    try {
-      TimeUnit.SECONDS.sleep(1);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
 }
