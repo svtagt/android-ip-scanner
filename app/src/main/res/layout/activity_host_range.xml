@@ -149,34 +149,59 @@
         app:barrierDirection="end"
         app:constraint_referenced_ids="tvFrom,tvTo" />
 
-    <Button
-        android:id="@+id/btnScan"
+
+
+    <NumberPicker
+        android:id="@+id/numpStartPort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_md"
-        android:text="@string/start_scan"
-        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintEnd_toStartOf="@+id/numpEndPort"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTo" />
 
-    <TextView
-        android:id="@+id/tvWhat"
+    <NumberPicker
+        android:id="@+id/numpEndPort"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_md"
+        android:layout_marginStart="@dimen/margin_md"
+        app:layout_constraintBottom_toBottomOf="@+id/numpStartPort"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnScan"
-        tools:text="scanning 192.168.1.1:80"/>
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/numpStartPort"
+        app:layout_constraintTop_toTopOf="@+id/numpStartPort" />
 
     <TextView
-        android:id="@+id/tvTotalCount"
+        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_md"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWhat"
-        tools:text="total: 8886/10000"/>
+        app:layout_constraintTop_toBottomOf="@+id/numpStartPort"
+        tools:text="Open ports: 80, 443, 8080" />
+
+    <TextView
+        android:id="@+id/tvDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStatus"
+        tools:text="Finished at 201ms" />
+
+    <Button
+        android:id="@+id/btnStart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/start_scan"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

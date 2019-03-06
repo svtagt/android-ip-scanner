@@ -33,6 +33,44 @@ public class IPAddress {
     return new IPAddress(value + 1);
   }
 
+  public IPAddress next(int count) {
+    return new IPAddress(value + count);
+  }
+
+  public IPAddress prev() {
+    return new IPAddress(value - 1);
+  }
+
+  public IPAddress prev(int count) {
+    return new IPAddress(value - count);
+  }
+
+  public boolean gt(IPAddress ipAddress) {
+    return this.value > ipAddress.getValue();
+  }
+
+  public boolean gte(IPAddress ipAddress) {
+    return this.value >= ipAddress.getValue();
+  }
+
+  public boolean lt(IPAddress ipAddress) {
+    return this.value < ipAddress.getValue();
+  }
+
+  public boolean lte(IPAddress ipAddress) {
+    return this.value <= ipAddress.getValue();
+  }
+
+
+  public static int countBetween(IPAddress ipAddress1, IPAddress ipAddress2) {
+    return Math.abs(ipAddress2.getValue() - ipAddress1.getValue());
+  }
+
+  public static IPAddress sub(IPAddress ipAddress1, IPAddress ipAddress2) {
+    return new IPAddress(ipAddress2.getValue() - ipAddress1.getValue());
+  }
+
+
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof IPAddress) {
