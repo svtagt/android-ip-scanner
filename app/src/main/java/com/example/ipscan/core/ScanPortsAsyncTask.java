@@ -42,7 +42,7 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
         InetAddress address = InetAddress.getByName(ip);
         ip = address.getHostAddress();
       } catch (UnknownHostException e) {
-        hostAsyncResponse.processFinish(false);
+        hostAsyncResponse.processFinish(ip, false);
         hostAsyncResponse.processFinish(e);
 
         return null;
@@ -62,7 +62,6 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
         }
 
         int schedule = rand.nextInt((int) ((((stopPort - startPort) / Const.NUM_THREADS_FOR_PORT_SCAN) / 1.5)) + 1) + 1;
-        Log.d(Const.LOG_TAG, "schedule: " + schedule);
         executor.schedule(new ScanPortsRunnable(ip, previousStart, previousStop, timeout, delegate), i % schedule, TimeUnit.SECONDS);
 
         previousStart = previousStop + 1;
@@ -78,7 +77,7 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
         hostAsyncResponse.processFinish(e);
       }
 
-      hostAsyncResponse.processFinish(true);
+      hostAsyncResponse.processFinish(ip,true);
     }
 
     return null;

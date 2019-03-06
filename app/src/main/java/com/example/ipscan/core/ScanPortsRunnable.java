@@ -41,9 +41,9 @@ public class ScanPortsRunnable implements Runnable {
      */
     @Override
     public void run() {
-        HostAsyncResponse activity = delegate.get();
+        HostAsyncResponse hostAsyncResponse = delegate.get();
         for (int i = startPort; i <= stopPort; i++) {
-            if (activity == null) {
+            if (hostAsyncResponse == null) {
                 return;
             }
 
@@ -53,10 +53,10 @@ public class ScanPortsRunnable implements Runnable {
                 socket.setTcpNoDelay(true);
                 socket.connect(new InetSocketAddress(ip, i), timeout);
             } catch (IllegalBlockingModeException | IllegalArgumentException e) {
-                activity.processFinish(e);
+                hostAsyncResponse.processFinish(e);
                 continue;
             } catch (IOException e) {
-                activity.processFinish(1);
+                hostAsyncResponse.processFinish(ip, 1);
                 continue; // Connection failures mean that the port isn't open.
             }
 
@@ -72,11 +72,11 @@ public class ScanPortsRunnable implements Runnable {
                     data = parseHTTP(buffered, out);
                 }
             } catch (IOException e) {
-                activity.processFinish(e);
+                hostAsyncResponse.processFinish(e);
             } finally {
                 portData.put(i, data);
-                activity.processFinish(portData);
-                activity.processFinish(1);
+                hostAsyncResponse.processFinish(ip, portData);
+                hostAsyncResponse.processFinish(ip, 1);
                 try {
                     socket.close();
                 } catch (IOException ignored) {

@@ -9,19 +9,19 @@ interface WanHostAsyncResponse {
      *
      * @param output
      */
-    void processFinish(int output);
+    void processFinish(String ip, int output);
 
     /**
      * Delegate to handle boolean outputs
      *
      * @param output
      */
-    void processFinish(boolean output);
+    void processFinish(String ip, boolean output);
 
     /**
      * Delegate to handle Map outputs
      *
      * @param output
      */
-    void processFinish(SparseArray<String> output);
+    void processFinish(String ip, SparseArray<String> output);
 }

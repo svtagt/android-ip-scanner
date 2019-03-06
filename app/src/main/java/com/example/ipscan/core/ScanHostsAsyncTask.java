@@ -18,7 +18,7 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
    *
    * @param delegate Called when a single host scan has been finished
    */
-  public ScanHostsAsyncTask(HostAsyncResponse delegate){
+  public ScanHostsAsyncTask(HostAsyncResponse delegate) {
     this.delegate = new WeakReference<>(delegate);
   }
 
@@ -32,10 +32,16 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
   protected Void doInBackground(Object... params) {
     IPAddress ipFrom = (IPAddress) params[0];
     IPAddress ipTo = (IPAddress) params[1];
-    int timeout = (int) params[2];
 
-    Log.d(Const.LOG_TAG, "ipFrom: " + ipFrom.toString());
-    Log.d(Const.LOG_TAG, "ipTo: " + ipFrom.toString());
+    int startPort = (int) params[2];
+    int stopPort = (int) params[3];
+    int timeout = (int) params[4];
+
+    Log.d(Const.LOG_TAG, "ScanHostsAsyncTask ipFrom: " + ipFrom.toString());
+    Log.d(Const.LOG_TAG, "ScanHostsAsyncTask ipTo: " + ipTo.toString());
+    Log.d(Const.LOG_TAG, "ScanHostsAsyncTask startPort: " + startPort);
+    Log.d(Const.LOG_TAG, "ScanHostsAsyncTask stopPort: " + stopPort);
+    Log.d(Const.LOG_TAG, "ScanHostsAsyncTask timeout: " + timeout);
 
     HostAsyncResponse hostAsyncResponse = delegate.get();
     if (hostAsyncResponse != null) {
@@ -43,28 +49,30 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
       Random rand = new Random();
 
       int chunk = (int) Math.ceil((double) (IPAddress.countBetween(ipFrom, ipTo)) / Const.NUM_THREADS_FOR_IP_SCAN);
-      Log.d(Const.LOG_TAG, "chunk: " + chunk);
+      Log.d(Const.LOG_TAG, "ScanHostsAsyncTask chunk: " + chunk);
 
       IPAddress prevStartIp = ipFrom;
       IPAddress prevStopIp = ipFrom.next(chunk);
 
-      Log.d(Const.LOG_TAG, "prevStartIp: " + prevStartIp.toString());
-      Log.d(Const.LOG_TAG, "prevStopIp: " + prevStopIp.toString());
+      Log.d(Const.LOG_TAG, "ScanHostsAsyncTask prevStartIp: " + prevStartIp.toString());
+      Log.d(Const.LOG_TAG, "ScanHostsAsyncTask prevStopIp: " + prevStopIp.toString());
 
       for (int i = 0; i < Const.NUM_THREADS_FOR_IP_SCAN; i++) {
         if (prevStopIp.gte(ipTo)) {
-//          executor.execute(new ScanHostsRunnable(prevStopIp, ipTo, timeout, delegate));
+          executor.execute(new ScanHostsRunnable(prevStartIp, ipTo, startPort, stopPort, timeout, delegate));
           break;
         }
 
         int schedule = rand.nextInt((int) ((((IPAddress.countBetween(ipFrom, ipTo)) / Const.NUM_THREADS_FOR_IP_SCAN) / 1.5)) + 1) + 1;
-        Log.d(Const.LOG_TAG, "schedule: " + schedule);
-//        executor.schedule(new ScanHostsRunnable(prevStartIp, prevStopIp, timeout, delegate), i % schedule, TimeUnit.SECONDS);
+
+        executor.schedule(new ScanHostsRunnable(prevStartIp, prevStopIp, startPort, stopPort, timeout, delegate), i % schedule, TimeUnit.SECONDS);
 
         prevStartIp = prevStopIp.next();
         prevStopIp = prevStopIp.next(chunk);
-      }
 
+        Log.d(Const.LOG_TAG, "ScanHostsAsyncTask prevStartIp next: " + prevStartIp.toString());
+        Log.d(Const.LOG_TAG, "ScanHostsAsyncTask prevStopIp next: " + prevStopIp.toString());
+      }
 
       executor.shutdown();
 
@@ -75,7 +83,7 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
         hostAsyncResponse.processFinish(e);
       }
 
-      hostAsyncResponse.processFinish(true);
+      hostAsyncResponse.processFinish("aaaaaaaa finish", true);
     }
 
     return null;

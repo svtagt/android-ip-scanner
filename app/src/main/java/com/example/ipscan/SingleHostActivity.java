@@ -123,21 +123,22 @@ public class SingleHostActivity extends AppCompatActivity {
         }
 
         @Override
-        public void processFinish(int output) {
+        public void processFinish(String ip, int output) {
 //          Log.d(Const.LOG_TAG, "int output: " + output);
         }
 
         @Override
-        public void processFinish(boolean output) {
+        public void processFinish(String ip, boolean output) {
           Log.d(Const.LOG_TAG, "boolean output: " + output);
           h.sendEmptyMessage(STATUS_SCANNING_DONE);
         }
 
         @Override
-        public void processFinish(SparseArray<String> output) {
+        public void processFinish(String ip, SparseArray<String> output) {
           int scannedPort = output.keyAt(0);
           String item = String.valueOf(scannedPort);
 
+          Log.d(Const.LOG_TAG, "ip: " + ip);
           Log.d(Const.LOG_TAG, "scannedPort: " + scannedPort);
           resultStr = resultStr + item + " ";
         }

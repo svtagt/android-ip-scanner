@@ -1,5 +1,9 @@
 package com.example.ipscan.core;
 
+import android.util.Log;
+
+import com.example.ipscan.utils.Const;
+
 import java.io.Serializable;
 
 public class HostModel implements Serializable {
@@ -57,6 +61,7 @@ public class HostModel implements Serializable {
     return mac;
   }
 
+  //TODO use IPAddress instead string
   /**
    * Starts a port scan
    *
@@ -70,4 +75,19 @@ public class HostModel implements Serializable {
     new ScanPortsAsyncTask(delegate).execute(ip, startPort, stopPort, timeout);
   }
 
+  /**
+   * Starts a hosts scan
+   *
+   * @param ipFrom The port to start scanning at
+   * @param ipTo  The port to stop scanning at
+   * @param delegate  Delegate to be called when the port scan has finished
+   */
+  public static void scanHosts(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, HostAsyncResponse delegate) {
+    Log.d(Const.LOG_TAG, "ipFrom: " + ipFrom);
+    Log.d(Const.LOG_TAG, "ipTo: " + ipTo);
+    Log.d(Const.LOG_TAG, "startPort: " + startPort);
+    Log.d(Const.LOG_TAG, "stopPort: " + stopPort);
+    Log.d(Const.LOG_TAG, "timeout: " + timeout);
+    new ScanHostsAsyncTask(delegate).execute(ipFrom, ipTo, startPort, stopPort, timeout);
+  }
 }
