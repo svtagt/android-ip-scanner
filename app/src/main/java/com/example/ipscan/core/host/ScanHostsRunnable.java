@@ -1,8 +1,11 @@
-package com.example.ipscan.core;
+package com.example.ipscan.core.host;
 
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.example.ipscan.core.HostModel;
+import com.example.ipscan.core.IPAddress;
+import com.example.ipscan.core.port.PortScanResult;
 import com.example.ipscan.utils.Const;
 
 import java.lang.ref.WeakReference;

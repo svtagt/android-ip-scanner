@@ -1,8 +1,8 @@
-package com.example.ipscan.core;
+package com.example.ipscan.core.result;
 
 import android.util.SparseArray;
 
-interface HostAsyncResult {
+public interface HostAsyncResult {
 
     /**
      * Delegate to handle integer outputs

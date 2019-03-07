@@ -1,10 +1,10 @@
-package com.example.ipscan.core;
+package com.example.ipscan.core.result;
 
 import android.util.SparseArray;
 
 import java.util.HashMap;
 
-interface PortAsyncResult {
+public interface PortAsyncResult {
 
   /**
    * Delegate to handle integer outputs

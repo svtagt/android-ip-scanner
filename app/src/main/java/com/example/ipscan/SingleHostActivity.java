@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.ipscan.core.PortScanResult;
+import com.example.ipscan.core.port.PortScanResult;
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.utils.Const;
 import com.stealthcopter.networktools.PortScan;

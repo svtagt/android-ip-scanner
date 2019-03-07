@@ -2,6 +2,9 @@ package com.example.ipscan.core;
 
 import android.util.Log;
 
+import com.example.ipscan.core.host.ScanHostsAsyncTask;
+import com.example.ipscan.core.port.PortScanResult;
+import com.example.ipscan.core.port.ScanPortsAsyncTask;
 import com.example.ipscan.utils.Const;
 
 import java.io.Serializable;
