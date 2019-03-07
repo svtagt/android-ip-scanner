@@ -2,6 +2,7 @@ package com.example.ipscan.core.port;
 
 import android.os.AsyncTask;
 
+import com.example.ipscan.core.result.PortScanResult;
 import com.example.ipscan.utils.Const;
 
 import java.lang.ref.WeakReference;

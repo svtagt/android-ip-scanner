@@ -5,7 +5,8 @@ import android.util.SparseArray;
 
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.core.IPAddress;
-import com.example.ipscan.core.port.PortScanResult;
+import com.example.ipscan.core.result.HostScanResult;
+import com.example.ipscan.core.result.PortScanResult;
 import com.example.ipscan.utils.Const;
 
 import java.lang.ref.WeakReference;
@@ -18,7 +19,7 @@ public class ScanHostsRunnable implements Runnable {
   private int stopPort;
   private int timeout;
 
-  private final WeakReference<PortScanResult> delegate;
+  private final WeakReference<HostScanResult> delegate;
 
   /**
    * Constructor to set the necessary data to perform a port scan
@@ -30,7 +31,7 @@ public class ScanHostsRunnable implements Runnable {
    * @param timeout   Socket timeout
    * @param delegate  Called when this chunk of ports has finished scanning
    */
-  public ScanHostsRunnable(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, WeakReference<PortScanResult> delegate) {
+  public ScanHostsRunnable(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, WeakReference<HostScanResult> delegate) {
     this.ipFrom = ipFrom;
     this.ipTo = ipTo;
 
@@ -46,7 +47,7 @@ public class ScanHostsRunnable implements Runnable {
    */
   @Override
   public void run() {
-    PortScanResult hostAsyncResponse = delegate.get();
+    HostScanResult hostScanResult = delegate.get();
     PortScanResult portRes = new PortScanResult() {
       @Override
       public <T extends Throwable> void processFinish(T output) {
@@ -74,7 +75,7 @@ public class ScanHostsRunnable implements Runnable {
 
 
     for (IPAddress addressIndex = ipFrom; addressIndex.lte(ipTo); addressIndex = addressIndex.next()) {
-      if (hostAsyncResponse == null) {
+      if (hostScanResult == null) {
         return;
       }
 
@@ -82,6 +83,6 @@ public class ScanHostsRunnable implements Runnable {
       HostModel.scanPorts(addressIndex.toString(), startPort, stopPort, timeout, portRes);
     }
 
-    hostAsyncResponse.processFinish("aaa finish", true);
+    hostScanResult.processFinish("aaa finish", true);
   }
 }

@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.ipscan.core.IPAddress;
-import com.example.ipscan.core.port.PortScanResult;
+import com.example.ipscan.core.result.HostScanResult;
 import com.example.ipscan.utils.Const;
 
 import java.lang.ref.WeakReference;
@@ -13,14 +13,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
-  private final WeakReference<PortScanResult> delegate;
+  private final WeakReference<HostScanResult> delegate;
 
   /**
    * Constructor to set the delegate
    *
    * @param delegate Called when a single host scan has been finished
    */
-  public ScanHostsAsyncTask(PortScanResult delegate) {
+  public ScanHostsAsyncTask(HostScanResult delegate) {
     this.delegate = new WeakReference<>(delegate);
   }
 
@@ -45,8 +45,8 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
     Log.d(Const.LOG_TAG, "ScanHostsAsyncTask stopPort: " + stopPort);
     Log.d(Const.LOG_TAG, "ScanHostsAsyncTask timeout: " + timeout);
 
-    PortScanResult hostAsyncResponse = delegate.get();
-    if (hostAsyncResponse != null) {
+    HostScanResult hostScanResult = delegate.get();
+    if (hostScanResult != null) {
       ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(Const.NUM_THREADS_FOR_IP_SCAN);
       Random rand = new Random();
 
@@ -82,10 +82,10 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
         executor.awaitTermination(5, TimeUnit.MINUTES);
         executor.shutdownNow();
       } catch (InterruptedException e) {
-        hostAsyncResponse.processFinish(e);
+        hostScanResult.processFinish(e);
       }
 
-      hostAsyncResponse.processFinish("aaaaaaaa finish", true);
+      hostScanResult.processFinish("aaaaaaaa finish", true);
     }
 
     return null;
