@@ -1,6 +1,7 @@
 package com.example.ipscan.core.port;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.ipscan.core.result.PortScanResult;
 import com.example.ipscan.utils.Const;
@@ -52,16 +53,24 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
       Random rand = new Random();
 
       int chunk = (int) Math.ceil((double) (stopPort - startPort) / Const.NUM_THREADS_FOR_PORT_SCAN);
+      Log.e(Const.LOG_TAG, "chunk: " + chunk);
       int previousStart = startPort;
       int previousStop = startPort + chunk;
 
       for (int i = 0; i < Const.NUM_THREADS_FOR_PORT_SCAN; i++) {
         if (previousStop >= stopPort) {
+          Log.e(Const.LOG_TAG, "last thread");
+          Log.e(Const.LOG_TAG, "previousStart: " + previousStart);
+          Log.e(Const.LOG_TAG, "stopPort: " + stopPort);
           executor.execute(new ScanPortsRunnable(ip, previousStart, stopPort, timeout, delegate));
           break;
         }
 
         int schedule = rand.nextInt((int) ((((stopPort - startPort) / Const.NUM_THREADS_FOR_PORT_SCAN) / 1.5)) + 1) + 1;
+        Log.e(Const.LOG_TAG, "schedule: " + schedule);
+        Log.e(Const.LOG_TAG, "delay: " + i % schedule);
+        Log.e(Const.LOG_TAG, "previousStart: " + previousStart);
+        Log.e(Const.LOG_TAG, "previousStop: " + previousStop);
         executor.schedule(new ScanPortsRunnable(ip, previousStart, previousStop, timeout, delegate), i % schedule, TimeUnit.SECONDS);
 
         previousStart = previousStop + 1;

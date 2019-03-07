@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.core.IPAddress;
-import com.example.ipscan.core.result.HostScanResult;
+import com.example.ipscan.core.result.PortScanResult;
 import com.example.ipscan.utils.Const;
 
 public class HostRangeActivity extends AppCompatActivity {
@@ -22,6 +22,9 @@ public class HostRangeActivity extends AppCompatActivity {
   private Button btnStart;
   private TextView tvStatus;
   private TextView tvDuration;
+
+  private long startTime;
+  private long finishTime;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -76,25 +79,31 @@ public class HostRangeActivity extends AppCompatActivity {
 //      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
 //      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
 
+      startTime = System.nanoTime();
       HostModel.scanHosts(ip1, ip2, numpStartPort.getValue(), numpEndPort.getValue(),
-        Const.WAN_SOCKET_TIMEOUT, new HostScanResult() {
+        Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
           @Override
           public <T extends Throwable> void processFinish(T output) {
 
           }
 
           @Override
-          public void processFinish(String ip, int output) {
-            Log.d(Const.LOG_TAG, "int :" + output + "ip: " + ip);
+          public void processFinish(String host, int openPortNumber) {
+
           }
 
           @Override
-          public void processFinish(String ip, boolean output) {
-            Log.d(Const.LOG_TAG, "boolean :" + output + "ip: " + ip);
+          public void processFinish(String host, boolean success) {
+            finishTime = System.nanoTime();
+            Log.d(Const.LOG_TAG, "HostRangeActivity host: " + host + ", success:" + success+ " finished at: " + (finishTime - startTime) / 1000000 + " ms" );
           }
 
           @Override
-          public void processFinish(String ip, SparseArray<String> output) {
+          public void processFinish(String host, SparseArray<String> openPortData) {
+            int scannedPort = openPortData.keyAt(0);
+            String item = String.valueOf(scannedPort);
+
+            Log.d(Const.LOG_TAG, "OPEN PORT ip: " + host + ", scannedPort:" + scannedPort);
 
           }
         });

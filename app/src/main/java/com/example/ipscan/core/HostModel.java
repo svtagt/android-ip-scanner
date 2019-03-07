@@ -1,8 +1,7 @@
 package com.example.ipscan.core;
 
-import com.example.ipscan.core.host.ScanHostsAsyncTask;
 import com.example.ipscan.core.port.ScanPortsAsyncTask;
-import com.example.ipscan.core.result.HostScanResult;
+import com.example.ipscan.core.port.ScanPortsHostRangeAsyncTask;
 import com.example.ipscan.core.result.PortScanResult;
 
 import java.io.Serializable;
@@ -83,7 +82,10 @@ public class HostModel implements Serializable {
    * @param ipTo  The port to stop scanning at
    * @param delegate  Delegate to be called when the port scan has finished
    */
-  public static void scanHosts(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, HostScanResult delegate) {
-    new ScanHostsAsyncTask(delegate).execute(ipFrom, ipTo, startPort, stopPort, timeout);
+  public static void scanHosts(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, PortScanResult delegate) {
+//    new ScanHostsAsyncTask(delegate).execute(ipFrom, ipTo, startPort, stopPort, timeout);
+    new ScanPortsHostRangeAsyncTask(delegate).execute(ipFrom, ipTo, startPort, stopPort, timeout);
   }
+
+
 }
