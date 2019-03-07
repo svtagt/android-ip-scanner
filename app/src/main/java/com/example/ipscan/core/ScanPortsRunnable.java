@@ -17,7 +17,7 @@ public class ScanPortsRunnable implements Runnable {
     private int startPort;
     private int stopPort;
     private int timeout;
-    private final WeakReference<HostAsyncResponse> delegate;
+    private final WeakReference<PortScanResult> delegate;
 
     /**
      * Constructor to set the necessary data to perform a port scan
@@ -28,7 +28,7 @@ public class ScanPortsRunnable implements Runnable {
      * @param timeout   Socket timeout
      * @param delegate  Called when this chunk of ports has finished scanning
      */
-    public ScanPortsRunnable(String ip, int startPort, int stopPort, int timeout, WeakReference<HostAsyncResponse> delegate) {
+    public ScanPortsRunnable(String ip, int startPort, int stopPort, int timeout, WeakReference<PortScanResult> delegate) {
         this.ip = ip;
         this.startPort = startPort;
         this.stopPort = stopPort;
@@ -41,9 +41,9 @@ public class ScanPortsRunnable implements Runnable {
      */
     @Override
     public void run() {
-        HostAsyncResponse hostAsyncResponse = delegate.get();
+        PortScanResult portScanResult = delegate.get();
         for (int i = startPort; i <= stopPort; i++) {
-            if (hostAsyncResponse == null) {
+            if (portScanResult == null) {
                 return;
             }
 
@@ -53,10 +53,9 @@ public class ScanPortsRunnable implements Runnable {
                 socket.setTcpNoDelay(true);
                 socket.connect(new InetSocketAddress(ip, i), timeout);
             } catch (IllegalBlockingModeException | IllegalArgumentException e) {
-                hostAsyncResponse.processFinish(e);
+                portScanResult.processFinish(e);
                 continue;
             } catch (IOException e) {
-                hostAsyncResponse.processFinish(ip, 1);
                 continue; // Connection failures mean that the port isn't open.
             }
 
@@ -72,11 +71,11 @@ public class ScanPortsRunnable implements Runnable {
                     data = parseHTTP(buffered, out);
                 }
             } catch (IOException e) {
-                hostAsyncResponse.processFinish(e);
+                portScanResult.processFinish(e);
             } finally {
                 portData.put(i, data);
-                hostAsyncResponse.processFinish(ip, portData);
-                hostAsyncResponse.processFinish(ip, 1);
+                portScanResult.processFinish(ip, portData);
+                portScanResult.processFinish(ip, i);
                 try {
                     socket.close();
                 } catch (IOException ignored) {

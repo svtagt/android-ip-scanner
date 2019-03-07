@@ -1,7 +1,6 @@
 package com.example.ipscan;
 
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +9,10 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.ipscan.core.HostAsyncResponse;
+import com.example.ipscan.core.PortScanResult;
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.core.IPAddress;
 import com.example.ipscan.utils.Const;
-
-import java.util.concurrent.TimeUnit;
 
 public class HostRangeActivity extends AppCompatActivity {
   private Handler h;
@@ -79,7 +76,7 @@ public class HostRangeActivity extends AppCompatActivity {
 //      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
 //      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
 
-      HostModel.scanHosts(ip1, ip2, numpStartPort.getValue(), numpEndPort.getValue(), Const.WAN_SOCKET_TIMEOUT, new HostAsyncResponse() {
+      HostModel.scanHosts(ip1, ip2, numpStartPort.getValue(), numpEndPort.getValue(), Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
         @Override
         public <T extends Throwable> void processFinish(T output) {
 

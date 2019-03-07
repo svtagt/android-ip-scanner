@@ -2,7 +2,7 @@ package com.example.ipscan.core;
 
 import android.util.SparseArray;
 
-interface WanHostAsyncResponse {
+interface HostAsyncResult {
 
     /**
      * Delegate to handle integer outputs

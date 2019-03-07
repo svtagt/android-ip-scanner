@@ -71,7 +71,7 @@ public class HostModel implements Serializable {
    * @param timeout   Socket timeout
    * @param delegate  Delegate to be called when the port scan has finished
    */
-  public static void scanPorts(String ip, int startPort, int stopPort, int timeout, HostAsyncResponse delegate) {
+  public static void scanPorts(String ip, int startPort, int stopPort, int timeout, PortScanResult delegate) {
     new ScanPortsAsyncTask(delegate).execute(ip, startPort, stopPort, timeout);
   }
 
@@ -82,7 +82,7 @@ public class HostModel implements Serializable {
    * @param ipTo  The port to stop scanning at
    * @param delegate  Delegate to be called when the port scan has finished
    */
-  public static void scanHosts(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, HostAsyncResponse delegate) {
+  public static void scanHosts(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, PortScanResult delegate) {
     Log.d(Const.LOG_TAG, "ipFrom: " + ipFrom);
     Log.d(Const.LOG_TAG, "ipTo: " + ipTo);
     Log.d(Const.LOG_TAG, "startPort: " + startPort);

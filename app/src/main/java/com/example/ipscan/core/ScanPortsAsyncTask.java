@@ -1,7 +1,6 @@
 package com.example.ipscan.core;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.ipscan.utils.Const;
 
@@ -13,14 +12,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
-  private final WeakReference<HostAsyncResponse> delegate;
+  private final WeakReference<PortScanResult> delegate;
 
   /**
    * Constructor to set the delegate
    *
    * @param delegate Called when a port scan has finished
    */
-  public ScanPortsAsyncTask(HostAsyncResponse delegate) {
+  public ScanPortsAsyncTask(PortScanResult delegate) {
     this.delegate = new WeakReference<>(delegate);
   }
 
@@ -36,7 +35,7 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
     int startPort = (int) params[1];
     int stopPort = (int) params[2];
     int timeout = (int) params[3];
-    HostAsyncResponse hostAsyncResponse = delegate.get();
+    PortScanResult hostAsyncResponse = delegate.get();
     if (hostAsyncResponse != null) {
       try {
         InetAddress address = InetAddress.getByName(ip);

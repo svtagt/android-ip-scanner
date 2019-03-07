@@ -1,6 +1,6 @@
 package com.example.ipscan.core;
 
-interface ErrorAsyncResponse {
+interface ErrorAsyncResult {
 
     /**
      * Delegate to bubble up errors

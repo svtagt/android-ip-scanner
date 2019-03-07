@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.ipscan.core.HostAsyncResponse;
+import com.example.ipscan.core.PortScanResult;
 import com.example.ipscan.core.HostModel;
 import com.example.ipscan.utils.Const;
 import com.stealthcopter.networktools.PortScan;
@@ -116,20 +116,20 @@ public class SingleHostActivity extends AppCompatActivity {
 
       h.sendEmptyMessage(STATUS_SCANNING_IN_PROGRESS);
 
-      HostModel.scanPorts(etUrlOrIp.getText().toString(), numpStartPort.getValue(), numpEndPort.getValue(), Const.WAN_SOCKET_TIMEOUT, new HostAsyncResponse() {
+      HostModel.scanPorts(etUrlOrIp.getText().toString(), numpStartPort.getValue(), numpEndPort.getValue(), Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
         @Override
         public <T extends Throwable> void processFinish(T output) {
 
         }
 
         @Override
-        public void processFinish(String ip, int output) {
-//          Log.d(Const.LOG_TAG, "int output: " + output);
+        public void processFinish(String ip, int openPortNumber) {
+          Log.d(Const.LOG_TAG, "SingleHostActivity openPortNumber: " + openPortNumber);
         }
 
         @Override
-        public void processFinish(String ip, boolean output) {
-          Log.d(Const.LOG_TAG, "boolean output: " + output);
+        public void processFinish(String ip, boolean success) {
+          Log.d(Const.LOG_TAG, "SingleHostActivity success: " + success);
           h.sendEmptyMessage(STATUS_SCANNING_DONE);
         }
 
@@ -138,8 +138,7 @@ public class SingleHostActivity extends AppCompatActivity {
           int scannedPort = output.keyAt(0);
           String item = String.valueOf(scannedPort);
 
-          Log.d(Const.LOG_TAG, "ip: " + ip);
-          Log.d(Const.LOG_TAG, "scannedPort: " + scannedPort);
+          Log.d(Const.LOG_TAG, "SingleHostActivity ip: " + ip + ", scannedPort:" + scannedPort);
           resultStr = resultStr + item + " ";
         }
       });

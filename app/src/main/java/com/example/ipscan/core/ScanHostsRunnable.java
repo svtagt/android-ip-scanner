@@ -15,7 +15,7 @@ public class ScanHostsRunnable implements Runnable {
   private int stopPort;
   private int timeout;
 
-  private final WeakReference<HostAsyncResponse> delegate;
+  private final WeakReference<PortScanResult> delegate;
 
   /**
    * Constructor to set the necessary data to perform a port scan
@@ -27,7 +27,7 @@ public class ScanHostsRunnable implements Runnable {
    * @param timeout   Socket timeout
    * @param delegate  Called when this chunk of ports has finished scanning
    */
-  public ScanHostsRunnable(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, WeakReference<HostAsyncResponse> delegate) {
+  public ScanHostsRunnable(IPAddress ipFrom, IPAddress ipTo, int startPort, int stopPort, int timeout, WeakReference<PortScanResult> delegate) {
     this.ipFrom = ipFrom;
     this.ipTo = ipTo;
 
@@ -43,8 +43,8 @@ public class ScanHostsRunnable implements Runnable {
    */
   @Override
   public void run() {
-    HostAsyncResponse hostAsyncResponse = delegate.get();
-    HostAsyncResponse portRes = new HostAsyncResponse() {
+    PortScanResult hostAsyncResponse = delegate.get();
+    PortScanResult portRes = new PortScanResult() {
       @Override
       public <T extends Throwable> void processFinish(T output) {
 

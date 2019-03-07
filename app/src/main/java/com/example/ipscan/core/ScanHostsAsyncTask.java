@@ -11,14 +11,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
-  private final WeakReference<HostAsyncResponse> delegate;
+  private final WeakReference<PortScanResult> delegate;
 
   /**
    * Constructor to set the delegate
    *
    * @param delegate Called when a single host scan has been finished
    */
-  public ScanHostsAsyncTask(HostAsyncResponse delegate) {
+  public ScanHostsAsyncTask(PortScanResult delegate) {
     this.delegate = new WeakReference<>(delegate);
   }
 
@@ -43,7 +43,7 @@ public class ScanHostsAsyncTask extends AsyncTask<Object, Void, Void> {
     Log.d(Const.LOG_TAG, "ScanHostsAsyncTask stopPort: " + stopPort);
     Log.d(Const.LOG_TAG, "ScanHostsAsyncTask timeout: " + timeout);
 
-    HostAsyncResponse hostAsyncResponse = delegate.get();
+    PortScanResult hostAsyncResponse = delegate.get();
     if (hostAsyncResponse != null) {
       ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(Const.NUM_THREADS_FOR_IP_SCAN);
       Random rand = new Random();
