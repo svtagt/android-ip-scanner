@@ -1,10 +1,8 @@
 package com.example.ipscan.core.port;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.example.ipscan.core.result.PortScanResult;
-import com.example.ipscan.utils.Const;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,10 +59,10 @@ public class ScanPortsRunnable implements Runnable {
         portScanResult.processFinish(e);
         continue;
       } catch (SocketTimeoutException e) {
-        Log.e(Const.LOG_TAG, "SocketTimeoutException !!!!!");
-        portScanResult.processFinish(e);
+        portScanResult.portWasTimedOut(ip, i);
         continue;
       } catch (IOException e) {
+        portScanResult.foundClosedPort(ip, i);
         continue; // Connection failures mean that the port isn't open.
       }
 
@@ -84,8 +82,7 @@ public class ScanPortsRunnable implements Runnable {
         portScanResult.processFinish(e);
       } finally {
         portData.put(i, data);
-        portScanResult.processFinish(ip, portData);
-        portScanResult.processFinish(ip, i);
+        portScanResult.foundOpenPort(ip, portData);
         try {
           socket.close();
         } catch (IOException ignored) {

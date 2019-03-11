@@ -64,7 +64,7 @@ public class ScanPortsAsyncTask extends AsyncTask<Object, Void, Void> {
       } catch (InterruptedException e) {
         hostAsyncResponse.processFinish(e);
       }
-      hostAsyncResponse.processFinish(ip,true);
+      hostAsyncResponse.processFinish(true);
     }
 
     return null;

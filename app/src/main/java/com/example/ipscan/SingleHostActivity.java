@@ -118,28 +118,33 @@ public class SingleHostActivity extends AppCompatActivity {
 
       HostModel.scanPorts(etUrlOrIp.getText().toString(), numpStartPort.getValue(), numpEndPort.getValue(), Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
         @Override
-        public <T extends Throwable> void processFinish(T output) {
-
+        public <T extends Throwable> void processFinish(T err) {
+          Log.e(Const.LOG_TAG, "ERROR! : " + err.toString());
         }
 
         @Override
-        public void processFinish(String ip, int openPortNumber) {
-          Log.d(Const.LOG_TAG, "SingleHostActivity openPortNumber: " + openPortNumber);
+        public void portWasTimedOut(String ip, int portNumber) {
+          Log.d(Const.LOG_TAG, "SingleHostActivity portWasTimedOut ip: " + ip + ", port: " + portNumber);
         }
 
         @Override
-        public void processFinish(String ip, boolean success) {
-          Log.d(Const.LOG_TAG, "SingleHostActivity success: " + success);
-          h.sendEmptyMessage(STATUS_SCANNING_DONE);
+        public void foundClosedPort(String host, int portNumber) {
+          Log.e(Const.LOG_TAG, "SingleHostActivity foundClosedPort ip: " + host + ", port: " + portNumber);
         }
 
+
         @Override
-        public void processFinish(String ip, SparseArray<String> output) {
+        public void foundOpenPort(String ip, SparseArray<String> output) {
           int scannedPort = output.keyAt(0);
           String item = String.valueOf(scannedPort);
-
           Log.d(Const.LOG_TAG, "SingleHostActivity ip: " + ip + ", scannedPort:" + scannedPort);
           resultStr = resultStr + item + " ";
+        }
+
+        @Override
+        public void processFinish(boolean success) {
+          Log.d(Const.LOG_TAG, "SingleHostActivity success: " + success);
+          h.sendEmptyMessage(STATUS_SCANNING_DONE);
         }
       });
     });

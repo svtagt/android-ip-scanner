@@ -91,29 +91,32 @@ public class HostRangeActivity extends AppCompatActivity {
       HostModel.scanHosts(ip1, ip2, numpStartPort.getValue(), numpEndPort.getValue(),
         Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
           @Override
-          public <T extends Throwable> void processFinish(T output) {
-            Log.e(Const.LOG_TAG, "HostRangeActivity processFinish err: " + output.toString());
+          public <T extends Throwable> void processFinish(T err) {
+            Log.e(Const.LOG_TAG, "ERROR! : " + err.toString());
           }
 
           @Override
-          public void processFinish(String host, int openPortNumber) {
-
+          public void portWasTimedOut(String host, int portNumber) {
+            Log.e(Const.LOG_TAG, "HostRangeActivity portWasTimedOut ip: " + host + ", port: " + portNumber);
           }
 
           @Override
-          public void processFinish(String host, boolean success) {
-            finishTime = System.nanoTime();
-            long duration = (finishTime - startTime) / 1000000;
-            Log.d(Const.LOG_TAG, "HostRangeActivity host: " + host + ", success:" + success+ " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)" );
+          public void foundClosedPort(String host, int portNumber) {
+            Log.e(Const.LOG_TAG, "HostRangeActivity foundClosedPort ip: " + host + ", port: " + portNumber);
           }
 
           @Override
-          public void processFinish(String host, SparseArray<String> openPortData) {
+          public void foundOpenPort(String host, SparseArray<String> openPortData) {
             int scannedPort = openPortData.keyAt(0);
             String item = String.valueOf(scannedPort);
-
             Log.d(Const.LOG_TAG, "OPEN PORT ip: " + host + ", scannedPort:" + scannedPort);
+          }
 
+          @Override
+          public void processFinish(boolean success) {
+            finishTime = System.nanoTime();
+            long duration = (finishTime - startTime) / 1000000;
+            Log.d(Const.LOG_TAG, "HostRangeActivity success:" + success+ " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)" );
           }
         });
     });

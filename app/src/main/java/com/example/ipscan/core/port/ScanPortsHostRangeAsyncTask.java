@@ -80,7 +80,7 @@ public class ScanPortsHostRangeAsyncTask extends AsyncTask<Object, Void, Void> {
       } catch (InterruptedException e) {
         portScanResult.processFinish(e);
       }
-      portScanResult.processFinish("FULL FINISH",true);
+      portScanResult.processFinish(true);
     }
 
     return null;

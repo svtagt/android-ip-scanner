@@ -2,25 +2,23 @@ package com.example.ipscan.core.result;
 
 import android.util.SparseArray;
 
-import java.util.HashMap;
-
 public interface PortAsyncResult {
 
   /**
    * Delegate to handle integer outputs
    *
    * @param host
-   * @param openPortNumber
+   * @param portNumber
    */
-  void processFinish(String host, int openPortNumber);
+  void portWasTimedOut(String host, int portNumber);
 
   /**
-   * Delegate to handle boolean outputs
+   * Delegate to handle integer outputs
    *
    * @param host
-   * @param success
+   * @param portNumber
    */
-  void processFinish(String host, boolean success);
+  void foundClosedPort(String host, int portNumber);
 
   /**
    * Delegate to handle HashMap outputs
@@ -28,5 +26,12 @@ public interface PortAsyncResult {
    * @param host
    * @param openPortData
    */
-  void processFinish(String host, SparseArray<String> openPortData);
+  void foundOpenPort(String host, SparseArray<String> openPortData);
+
+  /**
+   * Delegate to handle boolean outputs
+   *
+   * @param success
+   */
+  void processFinish(boolean success);
 }

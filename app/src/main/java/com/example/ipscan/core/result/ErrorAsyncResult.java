@@ -5,7 +5,7 @@ public interface ErrorAsyncResult {
     /**
      * Delegate to bubble up errors
      *
-     * @param output
+     * @param err
      */
-    <T extends Throwable> void processFinish(T output);
+    <T extends Throwable> void processFinish(T err);
 }
