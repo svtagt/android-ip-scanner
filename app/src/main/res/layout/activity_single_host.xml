@@ -77,7 +77,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/start_scan"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent" />
@@ -87,7 +86,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/start_way_2"
-        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline" />

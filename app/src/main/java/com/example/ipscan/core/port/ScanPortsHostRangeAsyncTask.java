@@ -1,6 +1,7 @@
 package com.example.ipscan.core.port;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.ipscan.core.IPAddress;
 import com.example.ipscan.core.result.PortScanResult;
@@ -38,29 +39,23 @@ public class ScanPortsHostRangeAsyncTask extends AsyncTask<Object, Void, Void> {
     int timeout = (int) params[4];
     PortScanResult portScanResult = delegate.get();
     if (portScanResult != null) {
-      ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(Const.NUM_THREADS_FOR_PORT_SCAN/ 2);
+      ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(Const.NUM_THREADS_FOR_PORT_SCAN);
       Random rand = new Random();
 
       int hostsCount = IPAddress.countBetween(ipFrom, ipTo);
       int threadsNumByHost = (int) Math.floor((double) Const.NUM_THREADS_FOR_PORT_SCAN/(hostsCount+1));
       int chunk = (int) Math.ceil((double) (stopPort - startPort) / threadsNumByHost);
-//      Log.d(Const.LOG_TAG, "ipFrom: " + ipFrom.toString());
-//      Log.d(Const.LOG_TAG, "ipTo: " + ipTo.toString());
-//      Log.d(Const.LOG_TAG, "hostsCount: " + hostsCount);
-//      Log.d(Const.LOG_TAG, "threadsNumByHost" + threadsNumByHost);
-//      Log.d(Const.LOG_TAG, "chunk" + chunk);
+      Log.d(Const.LOG_TAG, "ipFrom: " + ipFrom.toString());
+      Log.d(Const.LOG_TAG, "ipTo: " + ipTo.toString());
+      Log.d(Const.LOG_TAG, "hostsCount: " + hostsCount);
+      Log.d(Const.LOG_TAG, "threadsNumByHost" + threadsNumByHost);
+      Log.d(Const.LOG_TAG, "chunk" + chunk);
 
       for (IPAddress ipAddress = ipFrom; ipAddress.lte(ipTo); ipAddress = ipAddress.next()) {
         int previousStart = startPort;
         int previousStop = startPort + chunk;
 
-//        Log.d(Const.LOG_TAG, "Begin loop: ip: " + ipAddress.toString() + "previousStart: " + previousStart + ", previousStop: " + previousStop);
-
         for (int i=0; i<threadsNumByHost; i++) {
-//          Log.d(Const.LOG_TAG, "i: " + i);
-//          Log.d(Const.LOG_TAG, "previousStart" + previousStart);
-//          Log.d(Const.LOG_TAG, "previousStop" + previousStop);
-
           if (previousStop >= stopPort) {
             int schedule = rand.nextInt((int) ((((stopPort - startPort) / Const.NUM_THREADS_FOR_PORT_SCAN) / 1.5)) + 1) + 1;
             executor.schedule(new ScanPortsRunnable(ipAddress.toString(), previousStart, stopPort, timeout, delegate),  (i * hostsCount % schedule), TimeUnit.SECONDS);
@@ -77,31 +72,14 @@ public class ScanPortsHostRangeAsyncTask extends AsyncTask<Object, Void, Void> {
         }
       }
 
-//      int previousStart = startPort;
-//      int previousStop = startPort + chunk;
-//
-//      for (int i = 0; i < Const.NUM_THREADS_FOR_PORT_SCAN; i++) {
-//        if (previousStop >= stopPort) {
-//          executor.execute(new ScanPortsRunnable(ip, previousStart, stopPort, timeout, delegate));
-//          break;
-//        }
-//
-//        int schedule = rand.nextInt((int) ((((stopPort - startPort) / Const.NUM_THREADS_FOR_PORT_SCAN) / 1.5)) + 1) + 1;
-//        executor.schedule(new ScanPortsRunnable(ip, previousStart, previousStop, timeout, delegate), i % schedule, TimeUnit.SECONDS);
-//
-//        previousStart = previousStop + 1;
-//        previousStop = previousStop + chunk;
-//      }
-
       executor.shutdown();
 
       try {
-        executor.awaitTermination(5, TimeUnit.MINUTES);
+        executor.awaitTermination(15, TimeUnit.MINUTES);
         executor.shutdownNow();
       } catch (InterruptedException e) {
         portScanResult.processFinish(e);
       }
-
       portScanResult.processFinish("FULL FINISH",true);
     }
 

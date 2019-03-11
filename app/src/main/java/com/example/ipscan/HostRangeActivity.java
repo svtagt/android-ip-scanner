@@ -14,6 +14,8 @@ import com.example.ipscan.core.IPAddress;
 import com.example.ipscan.core.result.PortScanResult;
 import com.example.ipscan.utils.Const;
 
+import java.util.concurrent.TimeUnit;
+
 public class HostRangeActivity extends AppCompatActivity {
   private Handler h;
 
@@ -74,6 +76,12 @@ public class HostRangeActivity extends AppCompatActivity {
       IPAddress ip2 = new IPAddress("62.109.9.100");
       System.out.println("ip2 = " + ip2);
 
+//      System.out.println("called!");
+//      IPAddress ip1 = new IPAddress("81.30.115.0");
+//      System.out.println("ip1 = " + ip1);
+//      IPAddress ip2 = new IPAddress("81.30.115.4");
+//      System.out.println("ip2 = " + ip2);
+
 
 //      System.out.println("countBetween = " + IPAddress.countBetween(ip1, ip2));
 //      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
@@ -84,7 +92,7 @@ public class HostRangeActivity extends AppCompatActivity {
         Const.WAN_SOCKET_TIMEOUT, new PortScanResult() {
           @Override
           public <T extends Throwable> void processFinish(T output) {
-
+            Log.e(Const.LOG_TAG, "HostRangeActivity processFinish err: " + output.toString());
           }
 
           @Override
@@ -95,7 +103,8 @@ public class HostRangeActivity extends AppCompatActivity {
           @Override
           public void processFinish(String host, boolean success) {
             finishTime = System.nanoTime();
-            Log.d(Const.LOG_TAG, "HostRangeActivity host: " + host + ", success:" + success+ " finished at: " + (finishTime - startTime) / 1000000 + " ms" );
+            long duration = (finishTime - startTime) / 1000000;
+            Log.d(Const.LOG_TAG, "HostRangeActivity host: " + host + ", success:" + success+ " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)" );
           }
 
           @Override

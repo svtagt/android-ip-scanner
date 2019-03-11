@@ -9,8 +9,8 @@
     <string name="single_host">Single host</string>
     <string name="host_range">Host range</string>
     <string name="next">Next</string>
-    <string name="url_or_ip">Enter URL or IP</string>
-    <string name="def_url">wilix.org</string>
+    <string name="url_or_ip">Enter IP</string>
+    <string name="def_url">62.109.9.97</string>
     <string name="please_wait">Please wait...</string>
     <string name="start_way_2">Start (method 2)</string>
 </resources>
