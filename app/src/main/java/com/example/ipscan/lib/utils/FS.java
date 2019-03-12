@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.IPAddress;
 
 import java.io.File;
 
@@ -21,13 +22,19 @@ public class FS {
       Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
   }
 
-  public File getPublicAlbumStorageDir(String fileName) {
+  public static File createDocFile(String fileName) {
     // Get the directory for the user's public pictures directory.
+    Log.d(Const.LOG_TAG, "FS: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
     File file = new File(Environment.getExternalStoragePublicDirectory(
       Environment.DIRECTORY_DOCUMENTS), fileName);
     if (!file.mkdirs()) {
-      Log.e(Const.LOG_TAG, "Directory not created");
+      Log.e(Const.LOG_TAG, "file wasn't not created");
     }
     return file;
+  }
+
+  public static String generateDocName(IPAddress hostFrom, IPAddress hostTo,
+                                       int portFrom, int portTo, int timeout) {
+    return "test";
   }
 }
