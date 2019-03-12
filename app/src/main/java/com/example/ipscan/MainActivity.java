@@ -37,16 +37,26 @@ public class MainActivity extends AppCompatActivity {
     boolean checked = ((RadioButton) view).isChecked();
     btnNext.setEnabled(true);
     switch(view.getId()) {
-      case R.id.rbSingleHost:
+      case R.id.rbSingleHost: {
         if (checked){
           targetActivityClass = SingleHostActivity.class;
         }
         break;
-      case R.id.rbHostRange:
+      }
+
+      case R.id.rbHostRange: {
         if (checked){
           targetActivityClass = HostRangeActivity.class;
         }
         break;
+      }
+
+      case R.id.rbThroughService: {
+        if (checked){
+          targetActivityClass = ThroughServiceActivity.class;
+        }
+        break;
+      }
     }
   }
 }

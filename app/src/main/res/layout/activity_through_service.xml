@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThroughServiceActivity">
+
+    <Button
+        android:id="@+id/btnStartService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/start_service"
+        app:layout_constraintBottom_toTopOf="@+id/btnAddScanJob"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/btnAddScanJob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text="@string/add_scan_job"
+        app:layout_constraintBottom_toTopOf="@+id/btnStopService"
+        app:layout_constraintEnd_toEndOf="@+id/btnStartService"
+        app:layout_constraintStart_toStartOf="@+id/btnStartService"
+        app:layout_constraintTop_toBottomOf="@+id/btnStartService" />
+
+    <Button
+        android:id="@+id/btnStopService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop_service"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/btnAddScanJob"
+        app:layout_constraintStart_toStartOf="@+id/btnAddScanJob"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddScanJob" />
+</android.support.constraint.ConstraintLayout>
