@@ -1,8 +1,8 @@
-package com.example.ipscan.core.port;
+package com.example.ipscan.lib.port;
 
 import android.util.SparseArray;
 
-import com.example.ipscan.core.result.PortScanResult;
+import com.example.ipscan.lib.result.PortScanResult;
 
 import java.io.BufferedReader;
 import java.io.IOException;

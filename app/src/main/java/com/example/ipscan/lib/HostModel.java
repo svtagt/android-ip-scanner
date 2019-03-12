@@ -1,8 +1,8 @@
-package com.example.ipscan.core;
+package com.example.ipscan.lib;
 
-import com.example.ipscan.core.port.ScanPortsAsyncTask;
-import com.example.ipscan.core.port.ScanPortsHostRangeAsyncTask;
-import com.example.ipscan.core.result.PortScanResult;
+import com.example.ipscan.lib.port.ScanPortsAsyncTask;
+import com.example.ipscan.lib.port.ScanPortsHostRangeAsyncTask;
+import com.example.ipscan.lib.result.PortScanResult;
 
 import java.io.Serializable;
 

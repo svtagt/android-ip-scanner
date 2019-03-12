@@ -1,4 +1,4 @@
-package com.example.ipscan.core.result;
+package com.example.ipscan.lib.result;
 
 import android.util.SparseArray;
 

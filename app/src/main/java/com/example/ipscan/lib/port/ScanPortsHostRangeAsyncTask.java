@@ -1,11 +1,11 @@
-package com.example.ipscan.core.port;
+package com.example.ipscan.lib.port;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.ipscan.core.IPAddress;
-import com.example.ipscan.core.result.PortScanResult;
-import com.example.ipscan.utils.Const;
+import com.example.ipscan.lib.IPAddress;
+import com.example.ipscan.lib.result.PortScanResult;
+import com.example.ipscan.lib.utils.Const;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;

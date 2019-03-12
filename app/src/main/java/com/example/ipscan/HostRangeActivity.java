@@ -9,10 +9,10 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.ipscan.core.HostModel;
-import com.example.ipscan.core.IPAddress;
-import com.example.ipscan.core.result.PortScanResult;
-import com.example.ipscan.utils.Const;
+import com.example.ipscan.lib.HostModel;
+import com.example.ipscan.lib.IPAddress;
+import com.example.ipscan.lib.result.PortScanResult;
+import com.example.ipscan.lib.utils.Const;
 
 import java.util.concurrent.TimeUnit;
 

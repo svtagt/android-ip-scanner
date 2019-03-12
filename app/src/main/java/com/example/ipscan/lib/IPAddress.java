@@ -1,4 +1,4 @@
-package com.example.ipscan.core;
+package com.example.ipscan.lib;
 
 public class IPAddress {
 
