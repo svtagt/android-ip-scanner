@@ -1,4 +1,4 @@
-package com.example.ipscan.lib.utils;
+package com.example.ipscan.lib;
 
 public class Const {
   public static final String LOG_TAG = "IPSCAN";

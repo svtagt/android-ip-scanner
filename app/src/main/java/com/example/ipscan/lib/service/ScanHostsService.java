@@ -8,7 +8,7 @@ import android.util.Log;
 import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.port.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

@@ -1,11 +1,10 @@
 package com.example.ipscan.lib.port;
 
-import android.net.IpPrefix;
 import android.util.Log;
 
 import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;

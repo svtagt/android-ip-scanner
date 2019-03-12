@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.example.ipscan.lib.HostModel;
 import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 
 import java.util.concurrent.TimeUnit;
 

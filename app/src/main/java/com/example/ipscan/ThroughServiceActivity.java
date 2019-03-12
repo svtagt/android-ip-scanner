@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
 import com.example.ipscan.lib.service.ScanHostsService;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 
 public class ThroughServiceActivity extends AppCompatActivity {
 

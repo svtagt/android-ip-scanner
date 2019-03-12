@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.ipscan.lib.HostModel;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 import com.stealthcopter.networktools.PortScan;
 
 import java.net.UnknownHostException;
