@@ -32,10 +32,10 @@ public class ThroughServiceActivity extends AppCompatActivity {
   private void bindUi() {
     btnStartService.setOnClickListener(l -> {
       Intent intent = new Intent(this, ScanHostsService.class);
-      intent.putExtra(Const.EXTRA_HOST_FROM, "62.109.9.100");
+      intent.putExtra(Const.EXTRA_HOST_FROM, "62.109.9.97");
       intent.putExtra(Const.EXTRA_HOST_TO, "62.109.9.100");
       intent.putExtra(Const.EXTRA_PORT_FROM, 1);
-      intent.putExtra(Const.EXTRA_PORT_TO, 1024);
+      intent.putExtra(Const.EXTRA_PORT_TO, 128);
 
       startService(intent);
     });
