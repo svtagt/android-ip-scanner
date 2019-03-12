@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.port.ScanHostsRunnable;
@@ -68,10 +67,8 @@ public class ScanHostsService extends Service {
             }
 
             @Override
-            public void foundOpenPort(String host, SparseArray<String> openPortData) {
-              int scannedPort = openPortData.keyAt(0);
-              String item = String.valueOf(scannedPort);
-              Log.d(Const.LOG_TAG, "OPEN PORT ip: " + host + ", scannedPort:" + scannedPort);
+            public void foundOpenPort(String host, int portNumber, String banner) {
+              Log.d(Const.LOG_TAG, "ScanHostsService foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
             }
 
             @Override

@@ -4,15 +4,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.HostModel;
+import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.utils.Const;
 import com.stealthcopter.networktools.PortScan;
 
@@ -132,13 +131,10 @@ public class SingleHostActivity extends AppCompatActivity {
           Log.e(Const.LOG_TAG, "SingleHostActivity foundClosedPort ip: " + host + ", port: " + portNumber);
         }
 
-
         @Override
-        public void foundOpenPort(String ip, SparseArray<String> output) {
-          int scannedPort = output.keyAt(0);
-          String item = String.valueOf(scannedPort);
-          Log.d(Const.LOG_TAG, "SingleHostActivity ip: " + ip + ", scannedPort:" + scannedPort);
-          resultStr = resultStr + item + " ";
+        public void foundOpenPort(String host, int portNumber, String banner) {
+          Log.d(Const.LOG_TAG, "SingleHostActivity foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
+          resultStr = resultStr + portNumber + " ";
         }
 
         @Override

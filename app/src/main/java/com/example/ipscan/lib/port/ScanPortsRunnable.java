@@ -77,12 +77,13 @@ public class ScanPortsRunnable implements Runnable {
         } else if (i == 80 || i == 443 || i == 8080) {
           PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
           data = parseHTTP(buffered, out);
+
         }
       } catch (IOException e) {
         portScanResult.processFinish(e);
       } finally {
         portData.put(i, data);
-        portScanResult.foundOpenPort(ip, portData);
+        portScanResult.foundOpenPort(ip, i, data);
         try {
           socket.close();
         } catch (IOException ignored) {
