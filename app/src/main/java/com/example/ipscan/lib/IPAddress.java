@@ -66,6 +66,10 @@ public class IPAddress {
     return Math.abs(ipAddress2.getValue() - ipAddress1.getValue());
   }
 
+  public static int range(IPAddress ipAddress1, IPAddress ipAddress2) {
+    return Math.abs(ipAddress2.getValue() - ipAddress1.getValue()) + 1;
+  }
+
   public static IPAddress sub(IPAddress ipAddress1, IPAddress ipAddress2) {
     return new IPAddress(ipAddress2.getValue() - ipAddress1.getValue());
   }

@@ -12,6 +12,9 @@ import com.example.ipscan.lib.port.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.utils.FS;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -20,8 +23,12 @@ public class ScanHostsService extends Service {
   ExecutorService es;
   private long startTime;
   private long finishTime;
-
   private boolean serviceIsBusy;
+
+  IPAddress hostFrom;
+  IPAddress hostTo;
+
+  private File fileForResults;
   
   @Override
   public void onCreate() {
@@ -42,20 +49,23 @@ public class ScanHostsService extends Service {
         Log.d(Const.LOG_TAG, "FS: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
 
         serviceIsBusy = true;
-        String hostFrom = intent.getStringExtra(Const.EXTRA_HOST_FROM);
-        String hostTo = intent.getStringExtra(Const.EXTRA_HOST_TO);
+        String hostFromStr = intent.getStringExtra(Const.EXTRA_HOST_FROM);
+        String hostToStr = intent.getStringExtra(Const.EXTRA_HOST_TO);
         int portFrom = intent.getIntExtra(Const.EXTRA_PORT_FROM, -1);
         int portTo = intent.getIntExtra(Const.EXTRA_PORT_TO, -1);
 
-        Log.d(Const.LOG_TAG, "hostFrom: " + hostFrom);
-        Log.d(Const.LOG_TAG, "hostTo: " + hostTo);
+        Log.d(Const.LOG_TAG, "hostFrom: " + hostFromStr);
+        Log.d(Const.LOG_TAG, "hostTo: " + hostToStr);
         Log.d(Const.LOG_TAG, "portFrom: " + portFrom);
         Log.d(Const.LOG_TAG, "portTo: " + portTo);
 
-        if (hostFrom != null && hostTo != null && portFrom >= 0 && portTo > portFrom) {
+        if (hostFromStr != null && hostToStr != null && portFrom >= 0 && portTo > portFrom) {
           startTime = System.nanoTime();
-          es.execute(new ScanHostsRunnable(
-            new IPAddress(hostFrom), new IPAddress(hostTo), portFrom, portTo, Const.WAN_SOCKET_TIMEOUT,
+
+          hostFrom = new IPAddress(hostFromStr);
+          hostTo = new IPAddress(hostToStr);
+
+          es.execute(new ScanHostsRunnable(hostFrom, hostTo, portFrom, portTo, Const.WAN_SOCKET_TIMEOUT,
             new PortScanResult() {
               @Override
               public <T extends Throwable> void processFinish(T err) {
@@ -83,7 +93,27 @@ public class ScanHostsService extends Service {
                 long duration = (finishTime - startTime) / 1000000;
                 Log.d(Const.LOG_TAG, "ScanHostsService success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-//                File file = FS.createDocFile();
+                fileForResults = new File(FS.getReportsDir(), FS.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
+                try (PrintWriter writer = new PrintWriter(fileForResults)) {
+                  StringBuilder sb = new StringBuilder();
+                  sb.append("id");
+                  sb.append(';');
+                  sb.append("Name");
+                  sb.append('\n');
+
+                  sb.append("1");
+                  sb.append(';');
+                  sb.append("Prashant Ghimire");
+                  sb.append('\n');
+
+                  writer.write(sb.toString());
+                  writer.close();
+
+                  System.out.println("done!");
+
+                } catch (FileNotFoundException e) {
+                  System.out.println(e.getMessage());
+                }
 
                 serviceIsBusy = false;
               }

@@ -4,7 +4,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.IPAddress;
 
 import java.io.File;
 
@@ -24,17 +23,42 @@ public class FS {
 
   public static File createDocFile(String fileName) {
     // Get the directory for the user's public pictures directory.
+    Log.d(Const.LOG_TAG, "fileName: " + fileName);
     Log.d(Const.LOG_TAG, "FS: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
-    File file = new File(Environment.getExternalStoragePublicDirectory(
-      Environment.DIRECTORY_DOCUMENTS), fileName);
-    if (!file.mkdirs()) {
-      Log.e(Const.LOG_TAG, "file wasn't not created");
+
+
+    File reportsDir = new File(Environment.getExternalStoragePublicDirectory(
+      Environment.DIRECTORY_DOCUMENTS), Const.REPORTS_DIR_NAME);
+
+    if (!reportsDir.exists()) {
+      try {
+        reportsDir.mkdirs();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
-    return file;
+
+    File newReportFile = new File(reportsDir, fileName);
+
+    Log.d(Const.LOG_TAG, "path: " + newReportFile.getAbsolutePath());
+    return newReportFile;
   }
 
-  public static String generateDocName(IPAddress hostFrom, IPAddress hostTo,
-                                       int portFrom, int portTo, int timeout) {
-    return "test";
+
+  public static File getReportsDir() {
+    File folder = new File(Environment.getExternalStoragePublicDirectory(
+      Environment.DIRECTORY_DOCUMENTS), Const.REPORTS_DIR_NAME);
+    if (!folder.exists()) {
+      boolean result = folder.mkdirs();
+      Log.d(Const.LOG_TAG, "result: " + result);
+    } else {
+      Log.d(Const.LOG_TAG, "Directory exists");
+    }
+    return folder;
+  }
+
+  public static String generateDocName(String hostFrom, String hostTo,
+                                       int portFrom, int portTo) {
+    return hostFrom + "-" + hostTo + "(" + portFrom + "-" + portTo + ").csv";
   }
 }
