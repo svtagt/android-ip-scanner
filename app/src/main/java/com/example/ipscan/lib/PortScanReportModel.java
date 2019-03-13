@@ -30,24 +30,45 @@ public class PortScanReportModel {
 
     this.data = new ArrayList<>(portOffset);
     for (int i = 0; i < portOffset; i++) {
-      this.data = new ArrayList<>(hostsRangeSize);
+      this.data.add(new ArrayList<>(hostsRangeSize));
     }
   }
 
-  public void setPortData(IPAddress host, int port, String value) {
-    int indexOfPort = port - portFrom - 1;
+  private void set(IPAddress host, int port, String value) {
+    int indexOfPort = port - portFrom;
     int indexOfHost = IPAddress.countBetween(this.hostFrom, host);
-    Log.d(Const.LOG_TAG, "host: " + host.toString() + " port: " + port + " indexOfPort: " + indexOfPort + " indexOfHost: " + indexOfHost);
+    Log.d(Const.LOG_TAG, "SET host: " + host.toString() + " port: " + port + " indexOfPort: " + indexOfPort + " indexOfHost: " + indexOfHost);
     this.data.get(indexOfPort).set(indexOfHost, value);
   }
 
   public void markAsClosed(IPAddress host, int port) {
-    this.setPortData(host, port, this.portIsClosed);
+    this.set(host, port, this.portIsClosed);
   }
 
   public void markAsTimedOut(IPAddress host, int port) {
-    this.setPortData(host, port, this.portIsTimedOut);
+    this.set(host, port, this.portIsTimedOut);
   }
 
+  public void markAsOpen(IPAddress host, int port, String banner) {
+    this.set(host, port, banner);
+  }
 
+  public void print() {
+    for (int i=0; i<this.data.size(); i++) {
+      String str = "PORT " + getPortNumber(i) + " ";
+      ArrayList<String> portData = this.data.get(i);
+      for (int j=0; j<portData.size(); i++) {
+        str = str + "host:" + getHostStrByIndex(j) + "/val:" + portData.get(j);
+      }
+      Log.d(Const.LOG_TAG, str);
+    }
+  }
+
+  private int getPortNumber(int port) {
+    return port + this.portOffset;
+  }
+
+  private String getHostStrByIndex(int index) {
+    return hostFrom.next(index).toString();
+  }
 }

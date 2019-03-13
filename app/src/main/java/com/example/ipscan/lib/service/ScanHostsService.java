@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.IPAddress;
+import com.example.ipscan.lib.PortScanReportModel;
 import com.example.ipscan.lib.port.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.utils.FS;
@@ -28,6 +29,7 @@ public class ScanHostsService extends Service {
   IPAddress hostFrom;
   IPAddress hostTo;
 
+  private PortScanReportModel portScanReportModel;
   private File fileForResults;
   
   @Override
@@ -48,7 +50,6 @@ public class ScanHostsService extends Service {
       if (FS.isExternalStorageWritable()) {
         Log.d(Const.LOG_TAG, "FS: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
 
-        serviceIsBusy = true;
         String hostFromStr = intent.getStringExtra(Const.EXTRA_HOST_FROM);
         String hostToStr = intent.getStringExtra(Const.EXTRA_HOST_TO);
         int portFrom = intent.getIntExtra(Const.EXTRA_PORT_FROM, -1);
@@ -60,10 +61,13 @@ public class ScanHostsService extends Service {
         Log.d(Const.LOG_TAG, "portTo: " + portTo);
 
         if (hostFromStr != null && hostToStr != null && portFrom >= 0 && portTo > portFrom) {
+          serviceIsBusy = true;
           startTime = System.nanoTime();
 
           hostFrom = new IPAddress(hostFromStr);
           hostTo = new IPAddress(hostToStr);
+
+          portScanReportModel = new PortScanReportModel(hostFrom, hostTo, portFrom, portTo);
 
           es.execute(new ScanHostsRunnable(hostFrom, hostTo, portFrom, portTo, Const.WAN_SOCKET_TIMEOUT,
             new PortScanResult() {
@@ -75,16 +79,19 @@ public class ScanHostsService extends Service {
               @Override
               public void portWasTimedOut(String host, int portNumber) {
                 Log.e(Const.LOG_TAG, "ScanHostsService portWasTimedOut ip: " + host + ", port: " + portNumber);
+                portScanReportModel.markAsTimedOut(new IPAddress(host), portNumber);
               }
 
               @Override
               public void foundClosedPort(String host, int portNumber) {
                 Log.e(Const.LOG_TAG, "ScanHostsService foundClosedPort ip: " + host + ", port: " + portNumber);
+                portScanReportModel.markAsClosed(new IPAddress(host), portNumber);
               }
 
               @Override
               public void foundOpenPort(String host, int portNumber, String banner) {
                 Log.d(Const.LOG_TAG, "ScanHostsService foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
+                portScanReportModel.markAsOpen(new IPAddress(host), portNumber, banner);
               }
 
               @Override
@@ -96,14 +103,9 @@ public class ScanHostsService extends Service {
                 fileForResults = new File(FS.getReportsDir(), FS.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
                 try (PrintWriter writer = new PrintWriter(fileForResults)) {
                   StringBuilder sb = new StringBuilder();
-                  sb.append("id");
+                  sb.append("Port");
                   sb.append(';');
-                  sb.append("Name");
-                  sb.append('\n');
-
-                  sb.append("1");
-                  sb.append(';');
-                  sb.append("Prashant Ghimire");
+                  sb.append("Hosts");
                   sb.append('\n');
 
                   writer.write(sb.toString());
@@ -115,6 +117,7 @@ public class ScanHostsService extends Service {
                   System.out.println(e.getMessage());
                 }
 
+                portScanReportModel.print();
                 serviceIsBusy = false;
               }
             }
