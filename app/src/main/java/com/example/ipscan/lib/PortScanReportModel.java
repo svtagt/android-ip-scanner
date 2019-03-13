@@ -2,14 +2,12 @@ package com.example.ipscan.lib;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-
 public class PortScanReportModel {
   public static final String portIsClosed = "PORT_IS_CLOSED";
   public static final String portIsTimedOut = "CONNECTION_TIMED_OUT";
 
+  private String[][] data;
 
-  private ArrayList<ArrayList<String>> data;
   private int portOffset;
   private int hostsRangeSize;
 
@@ -28,9 +26,9 @@ public class PortScanReportModel {
     this.hostFrom = hostFrom;
     this.hostTo = hostTo;
 
-    this.data = new ArrayList<>(portOffset);
-    for (int i = 0; i < portOffset; i++) {
-      this.data.add(new ArrayList<>(hostsRangeSize));
+    this.data = new String[portOffset][hostsRangeSize];
+    for (int i=0; i<portOffset; i++){
+      data[i] = new String[hostsRangeSize];
     }
   }
 
@@ -38,7 +36,7 @@ public class PortScanReportModel {
     int indexOfPort = port - portFrom;
     int indexOfHost = IPAddress.countBetween(this.hostFrom, host);
     Log.d(Const.LOG_TAG, "SET host: " + host.toString() + " port: " + port + " indexOfPort: " + indexOfPort + " indexOfHost: " + indexOfHost);
-    this.data.get(indexOfPort).set(indexOfHost, value);
+    this.data[indexOfPort][indexOfHost] = value;
   }
 
   public void markAsClosed(IPAddress host, int port) {
@@ -54,18 +52,18 @@ public class PortScanReportModel {
   }
 
   public void print() {
-    for (int i=0; i<this.data.size(); i++) {
+    for (int i=0; i<this.data.length; i++) {
       String str = "PORT " + getPortNumber(i) + " ";
-      ArrayList<String> portData = this.data.get(i);
-      for (int j=0; j<portData.size(); i++) {
-        str = str + "host:" + getHostStrByIndex(j) + "/val:" + portData.get(j);
+      for (int j=0; j<this.data[i].length; j++) {
+        str = str + " host:" + getHostStrByIndex(j) + "/val:" + this.data[i][j];
       }
-      Log.d(Const.LOG_TAG, str);
+//      Log.d(Const.LOG_TAG, str);
+      System.out.println(str);
     }
   }
 
   private int getPortNumber(int port) {
-    return port + this.portOffset;
+    return port + this.portFrom;
   }
 
   private String getHostStrByIndex(int index) {
