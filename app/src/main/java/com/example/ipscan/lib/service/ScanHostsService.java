@@ -11,11 +11,9 @@ import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.PortScanReportModel;
 import com.example.ipscan.lib.port.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.FS;
+import com.example.ipscan.lib.utils.ExportUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -47,8 +45,8 @@ public class ScanHostsService extends Service {
 
     if (!serviceIsBusy) {
       //check availability of external storage
-      if (FS.isExternalStorageWritable()) {
-        Log.d(Const.LOG_TAG, "FS: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
+      if (ExportUtils.isExternalStorageWritable()) {
+        Log.d(Const.LOG_TAG, "ExportUtils: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
 
         String hostFromStr = intent.getStringExtra(Const.EXTRA_HOST_FROM);
         String hostToStr = intent.getStringExtra(Const.EXTRA_HOST_TO);
@@ -100,24 +98,12 @@ public class ScanHostsService extends Service {
                 long duration = (finishTime - startTime) / 1000000;
                 Log.d(Const.LOG_TAG, "ScanHostsService success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-                fileForResults = new File(FS.getReportsDir(), FS.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
-                try (PrintWriter writer = new PrintWriter(fileForResults)) {
-                  StringBuilder sb = new StringBuilder();
-                  sb.append("Port");
-                  sb.append(';');
-                  sb.append("Hosts");
-                  sb.append('\n');
+                fileForResults = new File(ExportUtils.getReportsDir(), ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
+                portScanReportModel.setDuration(duration);
+                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);
+                portScanReportModel.write(fileForResults);
 
-                  writer.write(sb.toString());
-                  writer.close();
 
-                  System.out.println("done!");
-
-                } catch (FileNotFoundException e) {
-                  System.out.println(e.getMessage());
-                }
-
-                portScanReportModel.print();
                 serviceIsBusy = false;
               }
             }

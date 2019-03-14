@@ -2,9 +2,14 @@ package com.example.ipscan.lib;
 
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 public class PortScanReportModel {
-  public static final String portIsClosed = "PORT_IS_CLOSED";
-  public static final String portIsTimedOut = "CONNECTION_TIMED_OUT";
+  public static final String portIsClosed = "CLOSED";
+  public static final String portIsTimedOut = "TIMED_OUT";
+  public static final String noBanner = "<OPEN_BUT_NO_BANNER>";
 
   private String[][] data;
 
@@ -15,6 +20,9 @@ public class PortScanReportModel {
   private int portTo;
   private IPAddress hostFrom;
   private IPAddress hostTo;
+
+  private int timeout;
+  private long duration;
 
   public PortScanReportModel(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
     this.portFrom = portFrom;
@@ -35,7 +43,6 @@ public class PortScanReportModel {
   private void set(IPAddress host, int port, String value) {
     int indexOfPort = port - portFrom;
     int indexOfHost = IPAddress.countBetween(this.hostFrom, host);
-    Log.d(Const.LOG_TAG, "SET host: " + host.toString() + " port: " + port + " indexOfPort: " + indexOfPort + " indexOfHost: " + indexOfHost);
     this.data[indexOfPort][indexOfHost] = value;
   }
 
@@ -48,18 +55,8 @@ public class PortScanReportModel {
   }
 
   public void markAsOpen(IPAddress host, int port, String banner) {
-    this.set(host, port, banner);
-  }
-
-  public void print() {
-    for (int i=0; i<this.data.length; i++) {
-      String str = "PORT " + getPortNumber(i) + " ";
-      for (int j=0; j<this.data[i].length; j++) {
-        str = str + " host:" + getHostStrByIndex(j) + "/val:" + this.data[i][j];
-      }
-//      Log.d(Const.LOG_TAG, str);
-      System.out.println(str);
-    }
+    String bannerStr = banner != null ? banner : this.noBanner;
+    this.set(host, port, bannerStr);
   }
 
   private int getPortNumber(int port) {
@@ -68,5 +65,67 @@ public class PortScanReportModel {
 
   private String getHostStrByIndex(int index) {
     return hostFrom.next(index).toString();
+  }
+
+  public File write(File file) {
+    try (PrintWriter printWriter = new PrintWriter(file)) {
+      printWriter.write(makeHeader().toString());
+      for (int i=0; i<this.data.length; i++) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getPortNumber(i));
+        sb.append(';');
+
+        for (int j=0; j<this.data[i].length; j++) {
+          sb.append(this.data[i][j]);
+          sb.append(';');
+        }
+        sb.append('\n');
+        printWriter.write(sb.toString());
+      }
+      printWriter.close();
+    } catch (FileNotFoundException e) {
+      Log.e(Const.LOG_TAG, e.getMessage());
+    }
+
+    Log.d(Const.LOG_TAG, "Writing was finished");
+    return file;
+  }
+
+  public void setTimeout(int timeout) {
+    this.timeout = timeout;
+  }
+
+  public void setDuration(long duration) {
+    this.duration = duration;
+  }
+
+  private StringBuilder makeHeader() {
+    StringBuilder sb = new StringBuilder();
+    if (timeout > 0) {
+      sb.append("Timeout: ");
+      sb.append(";");
+      sb.append(timeout);
+      sb.append(";");
+    }
+    if (duration > 0) {
+      sb.append("Duration: ");
+      sb.append(";");
+      sb.append(duration);
+      sb.append(";");
+      sb.append("ms");
+      sb.append(";");
+    }
+
+    if (sb.length() > 0) {
+      sb.append('\n');
+    }
+
+    sb.append("Port #;");
+    for (IPAddress ipAddress = hostFrom; ipAddress.lte(hostTo); ipAddress = ipAddress.next()) {
+      sb.append(ipAddress.toString());
+      sb.append(";");
+    }
+    sb.append('\n');
+    return sb;
   }
 }
