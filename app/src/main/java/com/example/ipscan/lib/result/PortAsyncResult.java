@@ -1,8 +1,7 @@
 package com.example.ipscan.lib.result;
 
-import android.util.SparseArray;
-
 public interface PortAsyncResult {
+  //TODO make right comments
 
   /**
    * Delegate to handle integer outputs
@@ -24,9 +23,16 @@ public interface PortAsyncResult {
    * Delegate to handle HashMap outputs
    *
    * @param host
-   * @param openPortData
+   * @param portNumber
+   * @param banner
    */
-  void foundOpenPort(String host, SparseArray<String> openPortData);
+  void foundOpenPort(String host, int portNumber, String banner);
+
+  /**
+   * Delegate to ...
+   *
+   */
+  void processItem();
 
   /**
    * Delegate to handle boolean outputs

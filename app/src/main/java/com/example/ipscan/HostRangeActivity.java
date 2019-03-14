@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.SparseArray;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import com.example.ipscan.lib.HostModel;
 import com.example.ipscan.lib.IPAddress;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.Const;
+import com.example.ipscan.lib.Const;
 
 import java.util.concurrent.TimeUnit;
 
@@ -64,28 +63,11 @@ public class HostRangeActivity extends AppCompatActivity {
     numpEndPort.setWrapSelectorWheel(false);
 
     btnStart.setOnClickListener(l -> {
-//      System.out.println("called!");
-//      IPAddress ip1 = new IPAddress("81.26.128.1");
-//      System.out.println("ip1 = " + ip1);
-//      IPAddress ip2 = new IPAddress("81.26.128.2");
-//      System.out.println("ip2 = " + ip2);
-
       System.out.println("called!");
       IPAddress ip1 = new IPAddress("62.109.9.97");
       System.out.println("ip1 = " + ip1);
       IPAddress ip2 = new IPAddress("62.109.9.100");
       System.out.println("ip2 = " + ip2);
-
-//      System.out.println("called!");
-//      IPAddress ip1 = new IPAddress("81.30.115.0");
-//      System.out.println("ip1 = " + ip1);
-//      IPAddress ip2 = new IPAddress("81.30.115.4");
-//      System.out.println("ip2 = " + ip2);
-
-
-//      System.out.println("countBetween = " + IPAddress.countBetween(ip1, ip2));
-//      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
-//      System.out.println("sub = " + IPAddress.sub(ip1, ip2));
 
       startTime = System.nanoTime();
       HostModel.scanHosts(ip1, ip2, numpStartPort.getValue(), numpEndPort.getValue(),
@@ -106,10 +88,13 @@ public class HostRangeActivity extends AppCompatActivity {
           }
 
           @Override
-          public void foundOpenPort(String host, SparseArray<String> openPortData) {
-            int scannedPort = openPortData.keyAt(0);
-            String item = String.valueOf(scannedPort);
-            Log.d(Const.LOG_TAG, "OPEN PORT ip: " + host + ", scannedPort:" + scannedPort);
+          public void foundOpenPort(String host, int portNumber, String banner) {
+            Log.d(Const.LOG_TAG, "HostRangeActivity foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
+          }
+
+          @Override
+          public void processItem() {
+
           }
 
           @Override
