@@ -8,12 +8,14 @@ import android.util.Log;
 
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.IPAddress;
+import com.example.ipscan.lib.PortScanReport;
 import com.example.ipscan.lib.PortScanReportModel;
 import com.example.ipscan.lib.port.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.utils.ExportUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,7 @@ public class ScanHostsService extends Service {
   IPAddress hostTo;
 
   private PortScanReportModel portScanReportModel;
+  ArrayList<String> resultData;
   private File fileForResults;
   
   @Override
@@ -65,7 +68,8 @@ public class ScanHostsService extends Service {
           hostFrom = new IPAddress(hostFromStr);
           hostTo = new IPAddress(hostToStr);
 
-          portScanReportModel = new PortScanReportModel(hostFrom, hostTo, portFrom, portTo);
+//          portScanReportModel = new PortScanReportModel(hostFrom, hostTo, portFrom, portTo);
+//          resultData = new ArrayList<>(PortScanReport.measure(hostFrom, hostTo, portFrom, portTo));
 
           es.execute(new ScanHostsRunnable(hostFrom, hostTo, portFrom, portTo, Const.WAN_SOCKET_TIMEOUT,
             new PortScanResult() {
@@ -76,20 +80,20 @@ public class ScanHostsService extends Service {
 
               @Override
               public void portWasTimedOut(String host, int portNumber) {
-                Log.e(Const.LOG_TAG, "ScanHostsService portWasTimedOut ip: " + host + ", port: " + portNumber);
-                portScanReportModel.markAsTimedOut(new IPAddress(host), portNumber);
+//                Log.d(Const.LOG_TAG, "ScanHostsService portWasTimedOut ip: " + host + ", port: " + portNumber);
+//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsTimedOut, null));
               }
 
               @Override
               public void foundClosedPort(String host, int portNumber) {
-                Log.e(Const.LOG_TAG, "ScanHostsService foundClosedPort ip: " + host + ", port: " + portNumber);
-                portScanReportModel.markAsClosed(new IPAddress(host), portNumber);
+//                Log.d(Const.LOG_TAG, "ScanHostsService foundClosedPort ip: " + host + ", port: " + portNumber);
+//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsClosed, null));
               }
 
               @Override
               public void foundOpenPort(String host, int portNumber, String banner) {
-                Log.d(Const.LOG_TAG, "ScanHostsService foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
-                portScanReportModel.markAsOpen(new IPAddress(host), portNumber, banner);
+//                Log.d(Const.LOG_TAG, "ScanHostsService foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
+//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsOpen, banner));
               }
 
               @Override
@@ -99,10 +103,11 @@ public class ScanHostsService extends Service {
                 Log.d(Const.LOG_TAG, "ScanHostsService success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
                 fileForResults = new File(ExportUtils.getReportsDir(), ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
-                portScanReportModel.setDuration(duration);
-                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);
-                portScanReportModel.write(fileForResults);
+//                portScanReportModel.setDuration(duration);
+//                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);
+//                portScanReportModel.write(fileForResults);
 
+//                PortScanReport.write(resultData, fileForResults);
 
                 serviceIsBusy = false;
               }

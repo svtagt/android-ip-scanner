@@ -28,7 +28,7 @@ public class PortScanReportModel {
     this.portFrom = portFrom;
     this.portTo = portTo;
 
-    this.portOffset = portTo - portFrom + 1; //1003
+    this.portOffset = portTo - portFrom + 1;
     this.hostsRangeSize = IPAddress.range(hostFrom, hostTo);
 
     this.hostFrom = hostFrom;
