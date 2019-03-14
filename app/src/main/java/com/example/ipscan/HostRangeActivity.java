@@ -93,6 +93,11 @@ public class HostRangeActivity extends AppCompatActivity {
           }
 
           @Override
+          public void processItem() {
+
+          }
+
+          @Override
           public void processFinish(boolean success) {
             finishTime = System.nanoTime();
             long duration = (finishTime - startTime) / 1000000;

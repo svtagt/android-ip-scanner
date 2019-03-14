@@ -1,6 +1,7 @@
 package com.example.ipscan.lib.result;
 
 public interface PortAsyncResult {
+  //TODO make right comments
 
   /**
    * Delegate to handle integer outputs
@@ -26,6 +27,12 @@ public interface PortAsyncResult {
    * @param banner
    */
   void foundOpenPort(String host, int portNumber, String banner);
+
+  /**
+   * Delegate to ...
+   *
+   */
+  void processItem();
 
   /**
    * Delegate to handle boolean outputs

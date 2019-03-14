@@ -138,6 +138,11 @@ public class SingleHostActivity extends AppCompatActivity {
         }
 
         @Override
+        public void processItem() {
+
+        }
+
+        @Override
         public void processFinish(boolean success) {
           Log.d(Const.LOG_TAG, "SingleHostActivity success: " + success);
           h.sendEmptyMessage(STATUS_SCANNING_DONE);

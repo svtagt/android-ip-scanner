@@ -60,9 +60,11 @@ public class ScanPortsRunnable implements Runnable {
         continue;
       } catch (SocketTimeoutException e) {
         portScanResult.portWasTimedOut(ip, i);
+        portScanResult.processItem();
         continue;
       } catch (IOException e) {
         portScanResult.foundClosedPort(ip, i);
+        portScanResult.processItem();
         continue; // Connection failures mean that the port isn't open.
       }
 
@@ -84,6 +86,7 @@ public class ScanPortsRunnable implements Runnable {
       } finally {
         portData.put(i, data);
         portScanResult.foundOpenPort(ip, i, data);
+        portScanResult.processItem();
         try {
           socket.close();
         } catch (IOException ignored) {

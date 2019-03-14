@@ -15,5 +15,5 @@ public class Const {
   public static final int WAN_SOCKET_TIMEOUT = 12000;
 
   //TODO: don't use fixed value
-  public static final int NUM_THREADS_FOR_PORT_SCAN = 1000;
+  public static final int NUM_THREADS_FOR_PORT_SCAN = 500;
 }

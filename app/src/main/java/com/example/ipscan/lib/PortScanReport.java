@@ -32,21 +32,23 @@ public class PortScanReport {
 
 
   public static String add(IPAddress host, int port, String status, String banner) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(host);
-    sb.append(";");
-    sb.append(port);
-    sb.append(";");
-    sb.append(status);
-    sb.append(";");
+//    StringBuilder sb = new StringBuilder();
+//    sb.append(host);
+//    sb.append(";");
+//    sb.append(port);
+//    sb.append(";");
+//    sb.append(status);
+//    sb.append(";");
+//
+//    if (banner != null) {
+//      sb.append(banner);
+//      sb.append(";");
+//    }
+//    sb.append('\n');
+//
+//    return sb.toString();
 
-    if (banner != null) {
-      sb.append(banner);
-      sb.append(";");
-    }
-    sb.append('\n');
-
-    return sb.toString();
+    return host + ";" + port + ";" + status + (banner != null ? (";" + banner + ";\n") : ";\n");
   }
 
   public static File write(ArrayList<String> resultData, File file) {

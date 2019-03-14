@@ -32,7 +32,9 @@ public class ScanHostsService extends Service {
   private PortScanReportModel portScanReportModel;
   ArrayList<String> resultData;
   private File fileForResults;
-  
+
+  int totalItems;
+  int currentItem;
   @Override
   public void onCreate() {
     // The service is being created
@@ -70,6 +72,8 @@ public class ScanHostsService extends Service {
 
 //          portScanReportModel = new PortScanReportModel(hostFrom, hostTo, portFrom, portTo);
 //          resultData = new ArrayList<>(PortScanReport.measure(hostFrom, hostTo, portFrom, portTo));
+          resultData = new ArrayList<>();
+          totalItems = PortScanReport.measure(hostFrom, hostTo, portFrom, portTo);
 
           es.execute(new ScanHostsRunnable(hostFrom, hostTo, portFrom, portTo, Const.WAN_SOCKET_TIMEOUT,
             new PortScanResult() {
@@ -80,34 +84,42 @@ public class ScanHostsService extends Service {
 
               @Override
               public void portWasTimedOut(String host, int portNumber) {
-//                Log.d(Const.LOG_TAG, "ScanHostsService portWasTimedOut ip: " + host + ", port: " + portNumber);
-//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsTimedOut, null));
+                currentItem++;
+//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
+                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsTimedOut, null));
               }
 
               @Override
               public void foundClosedPort(String host, int portNumber) {
-//                Log.d(Const.LOG_TAG, "ScanHostsService foundClosedPort ip: " + host + ", port: " + portNumber);
-//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsClosed, null));
+                currentItem++;
+//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
+                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsClosed, null));
               }
 
               @Override
               public void foundOpenPort(String host, int portNumber, String banner) {
-//                Log.d(Const.LOG_TAG, "ScanHostsService foundOpenPort host: " + host + ", port: " + portNumber + ", banner: " + banner);
-//                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsOpen, banner));
+                currentItem++;
+//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host + ", port: " + portNumber + ", banner: " + banner);
+                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsOpen, banner));
+              }
+
+              @Override
+              public void processItem() {
+                Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
               }
 
               @Override
               public void processFinish(boolean success) {
                 finishTime = System.nanoTime();
                 long duration = (finishTime - startTime) / 1000000;
-                Log.d(Const.LOG_TAG, "ScanHostsService success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
+                Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
                 fileForResults = new File(ExportUtils.getReportsDir(), ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
 //                portScanReportModel.setDuration(duration);
 //                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);
 //                portScanReportModel.write(fileForResults);
 
-//                PortScanReport.write(resultData, fileForResults);
+                PortScanReport.write(resultData, fileForResults);
 
                 serviceIsBusy = false;
               }
