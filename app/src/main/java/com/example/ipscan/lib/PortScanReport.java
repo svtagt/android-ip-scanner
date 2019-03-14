@@ -8,9 +8,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class PortScanReport {
-  public static final String portIsClosed = "CLOSED";
-  public static final String portIsOpen = "OPEN";
-  public static final String portIsTimedOut = "TIMED_OUT";
+  public static final String portIsClosed = "closed";
+  public static final String portIsOpen = "open";
+  public static final String portIsTimedOut = "timed_out";
 
   public static String[] init(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
     int portOffset = portTo - portFrom + 1;

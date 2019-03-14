@@ -114,7 +114,9 @@ public class ScanHostsService extends Service {
                 long duration = (finishTime - startTime) / 1000000;
                 Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-                fileForResults = new File(ExportUtils.getReportsDir(), ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
+                fileForResults = new File(ExportUtils.getReportsDir(),
+                  ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
+
 //                portScanReportModel.setDuration(duration);
 //                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);
 //                portScanReportModel.write(fileForResults);

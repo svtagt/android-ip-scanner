@@ -12,10 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 
-public class MainActivity extends AppCompatActivity {
-  private Class targetActivityClass;
+import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.service.ScanHostsService;
 
-  private Button btnNext;
+public class MainActivity extends AppCompatActivity {
+  private Button btnStartService;
+  private Button btnStopService;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -43,41 +46,26 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void setupUi() {
-    btnNext = findViewById(R.id.btnNext);
+    btnStartService = findViewById(R.id.btnStartService);
+    btnStopService = findViewById(R.id.btnStopService);
   }
 
   private void bindUi() {
-    btnNext.setOnClickListener(l -> {
-      if (targetActivityClass != null) {
-        startActivity(new Intent(MainActivity.this, targetActivityClass));
-      }
+    btnStartService.setOnClickListener(l -> {
+      Intent intent = new Intent(this, ScanHostsService.class);
+
+      intent.putExtra(Const.EXTRA_HOST_FROM, "62.109.9.96");
+      intent.putExtra(Const.EXTRA_HOST_TO, "62.109.9.100");
+
+      intent.putExtra(Const.EXTRA_PORT_FROM, 1);
+      intent.putExtra(Const.EXTRA_PORT_TO, 100);
+
+      startService(intent);
+    });
+    btnStopService.setOnClickListener(l -> {
+      stopService(new Intent(this, ScanHostsService.class));
     });
   }
 
-  public void onRadioButtonClicked(View view) {
-    boolean checked = ((RadioButton) view).isChecked();
-    btnNext.setEnabled(true);
-    switch(view.getId()) {
-      case R.id.rbSingleHost: {
-        if (checked){
-          targetActivityClass = SingleHostActivity.class;
-        }
-        break;
-      }
-
-      case R.id.rbHostRange: {
-        if (checked){
-          targetActivityClass = HostRangeActivity.class;
-        }
-        break;
-      }
-
-      case R.id.rbThroughService: {
-        if (checked){
-          targetActivityClass = ThroughServiceActivity.class;
-        }
-        break;
-      }
-    }
-  }
 }
+
