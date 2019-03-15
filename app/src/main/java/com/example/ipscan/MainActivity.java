@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.services.ScanHostsService;
+import com.example.ipscan.lib.utils.ParamsParser;
 
 public class MainActivity extends AppCompatActivity {
   private Button btnStartService;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     setupUi();
     bindUi();
+
+    Log.d(Constant.LOG_TAG, "PORTS: '"  + ParamsParser.getPortsStr("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,3-1024,8080") + "'");
   }
 
   private void askPermissions() {
