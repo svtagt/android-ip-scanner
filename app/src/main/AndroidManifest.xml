@@ -22,7 +22,7 @@
         </activity>
 
         <service
-            android:name=".lib.services.ScanHostsService"
+            android:name=".lib.services.ScanService"
             android:description="@string/scan_hosts_service_description"
             android:exported="false"/>
     </application>

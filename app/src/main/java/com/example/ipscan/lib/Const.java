@@ -3,11 +3,7 @@ package com.example.ipscan.lib;
 public class Const {
   public static final String LOG_TAG = "IPSCAN LIB";
 
-  public static final String EXTRA_HOST_FROM = "hostFrom";
-  public static final String EXTRA_HOST_TO = "hostTo";
-  public static final String EXTRA_PORT_FROM = "portFrom";
-  public static final String EXTRA_PORT_TO = "portTo";
-
+  public static final String EXTRA_SCAN_PARAMS = "hostFrom";
   public static final String REPORTS_DIR_NAME = "IPScanReports";
 
   public static final int MAX_PORT_VALUE = 65535;

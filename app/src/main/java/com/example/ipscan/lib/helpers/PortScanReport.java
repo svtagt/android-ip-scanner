@@ -23,13 +23,16 @@ public class PortScanReport {
     return new String[reportArraySize];
   }
 
-  public static int measure(Host hostFrom, Host hostTo, int portFrom, int portTo) {
-    int portOffset = portTo - portFrom + 1;
-    int hostsRangeSize = Host.range(hostFrom, hostTo);
-    int reportArraySize = portOffset * hostsRangeSize;
+  public static long measure(ArrayList<Host> hostsToScan, ArrayList<PortRange> portRangesToScan) {
 
-    Log.d(Const.LOG_TAG, "reportArraySize: " + reportArraySize);
-    return reportArraySize;
+    int portsCount = 0;
+    for (int i=0; i<portRangesToScan.size(); i++) {
+      portRangesToScan.get(i).print();
+      Log.e(Const.LOG_TAG, "!!!" + portRangesToScan.get(i).length());
+      portsCount+=portRangesToScan.get(i).length();
+    }
+    System.out.println("portsCount: " + portsCount);
+    return hostsToScan.size() * portsCount;
   }
 
 

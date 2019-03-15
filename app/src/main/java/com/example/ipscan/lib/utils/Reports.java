@@ -33,8 +33,10 @@ public class Reports {
     return folder;
   }
 
-  public static String generateDocName(String hostFrom, String hostTo,
-                                       int portFrom, int portTo) {
-    return hostFrom + "-" + hostTo + "(" + portFrom + "-" + portTo + ").csv";
+  public static String generateDocName(String str) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(str);
+    sb.append(".csv");
+    return sb.toString();
   }
 }

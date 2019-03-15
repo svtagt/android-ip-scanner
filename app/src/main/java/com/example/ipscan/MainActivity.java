@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.services.ScanHostsService;
+import com.example.ipscan.lib.services.ScanService;
 
 public class MainActivity extends AppCompatActivity {
   private Button btnStartService;
@@ -55,18 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
   private void bindUi() {
     btnStartService.setOnClickListener(l -> {
-      Intent intent = new Intent(this, ScanHostsService.class);
+      Intent intent = new Intent(this, ScanService.class);
 
-      intent.putExtra(Const.EXTRA_HOST_FROM, "62.109.9.96");
-      intent.putExtra(Const.EXTRA_HOST_TO, "62.109.9.100");
-
-      intent.putExtra(Const.EXTRA_PORT_FROM, 1);
-      intent.putExtra(Const.EXTRA_PORT_TO, 100);
-
+      String paramsStr = "-h 62.109.9.96-62.109.9.102 -p 1,22,80,1000-1024,8080,2000-2010";
+      intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
       startService(intent);
     });
     btnStopService.setOnClickListener(l -> {
-      stopService(new Intent(this, ScanHostsService.class));
+      stopService(new Intent(this, ScanService.class));
     });
   }
 
