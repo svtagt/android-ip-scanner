@@ -1,10 +1,8 @@
 package com.example.ipscan.lib.result;
 
 public interface PortAsyncResult {
-  //TODO make right comments
-
   /**
-   * Delegate to handle integer outputs
+   * Delegate to handle timed out ports
    *
    * @param host
    * @param portNumber
@@ -12,7 +10,7 @@ public interface PortAsyncResult {
   void portWasTimedOut(String host, int portNumber);
 
   /**
-   * Delegate to handle integer outputs
+   * Delegate to handle closed ports
    *
    * @param host
    * @param portNumber
@@ -20,7 +18,7 @@ public interface PortAsyncResult {
   void foundClosedPort(String host, int portNumber);
 
   /**
-   * Delegate to handle HashMap outputs
+   * Delegate to handle opened ports
    *
    * @param host
    * @param portNumber
@@ -29,13 +27,13 @@ public interface PortAsyncResult {
   void foundOpenPort(String host, int portNumber, String banner);
 
   /**
-   * Delegate to ...
+   * Delegate to handle that the new one port was processed
    *
    */
   void processItem();
 
   /**
-   * Delegate to handle boolean outputs
+   * Delegate to handle when all ports and hosts scan is complete
    *
    * @param success
    */

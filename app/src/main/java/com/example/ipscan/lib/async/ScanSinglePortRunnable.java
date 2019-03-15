@@ -35,7 +35,6 @@ public class ScanSinglePortRunnable implements Runnable {
     this.port = port;
     this.timeout = timeout;
     this.delegate = delegate;
-
   }
 
   /**

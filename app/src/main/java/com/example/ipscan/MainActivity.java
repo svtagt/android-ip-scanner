@@ -17,21 +17,15 @@ public class MainActivity extends AppCompatActivity {
   private Button btnStartService;
   private Button btnStopService;
 
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-//    String paramsStr = "-h 192.168.1.1,192.168.5.0/24  -p 1,2,91,30-100,8080,29,1-10,12-20";
-//    ArrayList<PortRange> portRanges = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
-//    ArrayList<Host> hosts = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
-
     askPermissions();
 
     setupUi();
     bindUi();
-
   }
 
   private void askPermissions() {
