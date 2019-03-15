@@ -41,11 +41,7 @@ public class ParamsParser {
   public static boolean[] extractPorts(String paramsStr) {
     boolean[] resultBoolArr = new boolean[65536];
     String portsStr = getArgVal(paramsStr, TYPE_PORTS);
-
     String [] portsArray = portsStr.split(SEPARATOR);
-    for(String port : portsArray){
-      System.out.println("port: " + port);
-    }
 
     for (int i=0; i<portsArray.length; i++) {
       if (!portsArray[i].contains("-")) {
@@ -56,31 +52,30 @@ public class ParamsParser {
         String[] rangePortsArr = portsArray[i].split("-");
         int rangePortFrom = Integer.valueOf(rangePortsArr[0]);
         int rangePortTo = Integer.valueOf(rangePortsArr[1]);
-        System.out.println("Found range; from: " + rangePortFrom + " to: " + rangePortTo);
 
         for (int j=rangePortFrom; j<=rangePortTo; j++) {
           resultBoolArr[j] = true;
         }
       }
     }
-
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder.append("PORTS: ");
-    for (int i=0; i<resultBoolArr.length; i++) {
-      if (resultBoolArr[i]) {
-        stringBuilder.append(" " + i);
-      }
-    }
-
-    System.out.println(stringBuilder.toString());
     return resultBoolArr;
   }
 
   public static ArrayList<PortRange> makePortRangesList(boolean[] portsArr) {
     ArrayList<PortRange> resultList = new ArrayList<>();
 
+    int portFrom = -1;
+    boolean rangeBeginFound = false;
     for (int i=1; i<portsArr.length; i++) {
-
+      if (!rangeBeginFound && portsArr[i]) {
+        portFrom = i;
+        rangeBeginFound = true;
+      }
+      
+      if (rangeBeginFound && !portsArr[i]) {
+        resultList.add(new PortRange(portFrom, i-1));
+        rangeBeginFound = false;
+      }
     }
 
     return resultList;
