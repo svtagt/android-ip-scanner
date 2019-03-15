@@ -35,10 +35,11 @@ public class ScanRunnable implements Runnable {
       es = Executors.newFixedThreadPool(Const.NUM_THREADS_FOR_PORT_SCAN);
       for (int i=0; i<hostsToScan.size(); i++) {
         for (int j=0; j<portRangesToScan.size(); j++) {
-          es.execute(new ScanPortRangeRunnable(hostsToScan.get(i), portRangesToScan.get(j), timeout, delegate));
+          for (int k=portRangesToScan.get(j).getPortFrom(); k<portRangesToScan.get(j).getPortTo(); k++) {
+            es.execute(new ScanSinglePortRunnable(hostsToScan.get(i), k, timeout, delegate));
+          }
         }
       }
-
       es.shutdown();
 
       try {

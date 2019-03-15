@@ -22,10 +22,7 @@ public class PortRange {
   }
 
   public int length() {
-    if (portFrom == portTo) {
-      return 1;
-    }
-    return portTo - portFrom;
+    return portTo - portFrom + 1;
   }
 
   public void print() {

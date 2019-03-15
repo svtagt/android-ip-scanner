@@ -59,11 +59,10 @@ public class ScanService extends Service {
         if (Reports.isExternalStorageWritable()) {
           if (hostsToScan.size() > 0 && portRangesToScan.size() > 0) {
             serviceIsBusy = true;
-            startTime = System.nanoTime();
-//            resultData = new ArrayList<>();
             totalItems = PortScanReport.measure(hostsToScan, portRangesToScan);
+            currentItem = 0;
             resultData = new ArrayList<>((int) totalItems);
-
+            startTime = System.nanoTime();
             es.execute(new ScanRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
               new PortScanResult() {
                 @Override
@@ -74,14 +73,14 @@ public class ScanService extends Service {
                 @Override
                 public void portWasTimedOut(String host, int portNumber) {
                   currentItem++;
-                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
+//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
                   resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsTimedOut, null));
                 }
 
                 @Override
                 public void foundClosedPort(String host, int portNumber) {
                   currentItem++;
-                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
+//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
                   resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsClosed, null));
                 }
 
@@ -94,7 +93,7 @@ public class ScanService extends Service {
 
                 @Override
                 public void processItem() {
-                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
+//                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
                 }
 
                 @Override

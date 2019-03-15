@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     btnStartService.setOnClickListener(l -> {
       Intent intent = new Intent(this, ScanService.class);
 
-      String paramsStr = "-h 62.109.9.96-62.109.9.102 -p 1,22,80,1000-1024,8080,2000-2010";
+      String paramsStr = "-h 62.109.9.90-62.109.9.120 -p 1-1024";
       intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
       startService(intent);
     });
