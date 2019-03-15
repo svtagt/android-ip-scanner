@@ -1,4 +1,4 @@
-package com.example.ipscan.lib.service;
+package com.example.ipscan.lib.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,12 +7,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.IPAddress;
-import com.example.ipscan.lib.PortScanReport;
+import com.example.ipscan.lib.helpers.IPAddress;
+import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.PortScanReportModel;
-import com.example.ipscan.lib.port.ScanHostsRunnable;
+import com.example.ipscan.lib.async.ScanHostsRunnable;
 import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.ExportUtils;
+import com.example.ipscan.lib.utils.Reports;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,8 +50,8 @@ public class ScanHostsService extends Service {
 
     if (!serviceIsBusy) {
       //check availability of external storage
-      if (ExportUtils.isExternalStorageWritable()) {
-        Log.d(Const.LOG_TAG, "ExportUtils: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
+      if (Reports.isExternalStorageWritable()) {
+        Log.d(Const.LOG_TAG, "Reports: DIRECTORY_DOCUMENTS: " + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS));
 
         String hostFromStr = intent.getStringExtra(Const.EXTRA_HOST_FROM);
         String hostToStr = intent.getStringExtra(Const.EXTRA_HOST_TO);
@@ -114,8 +114,8 @@ public class ScanHostsService extends Service {
                 long duration = (finishTime - startTime) / 1000000;
                 Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-                fileForResults = new File(ExportUtils.getReportsDir(),
-                  ExportUtils.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
+                fileForResults = new File(Reports.getReportsDir(),
+                  Reports.generateDocName(hostFromStr, hostToStr, portFrom, portTo));
 
 //                portScanReportModel.setDuration(duration);
 //                portScanReportModel.setTimeout(Const.WAN_SOCKET_TIMEOUT);

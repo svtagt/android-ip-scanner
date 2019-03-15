@@ -2,6 +2,8 @@ package com.example.ipscan.lib;
 
 import android.util.Log;
 
+import com.example.ipscan.lib.helpers.IPAddress;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

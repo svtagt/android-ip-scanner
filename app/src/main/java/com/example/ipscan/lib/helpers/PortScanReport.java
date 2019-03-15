@@ -1,6 +1,8 @@
-package com.example.ipscan.lib;
+package com.example.ipscan.lib.helpers;
 
 import android.util.Log;
+
+import com.example.ipscan.lib.Const;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -8,12 +8,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.service.ScanHostsService;
+import com.example.ipscan.lib.services.ScanHostsService;
 
 public class MainActivity extends AppCompatActivity {
   private Button btnStartService;

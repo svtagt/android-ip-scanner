@@ -7,7 +7,7 @@ import com.example.ipscan.lib.Const;
 
 import java.io.File;
 
-public class ExportUtils {
+public class Reports {
   /* Checks if external storage is available for read and write */
   public static boolean isExternalStorageWritable() {
     String state = Environment.getExternalStorageState();

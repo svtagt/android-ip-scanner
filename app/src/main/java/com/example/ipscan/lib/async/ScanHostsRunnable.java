@@ -1,8 +1,8 @@
-package com.example.ipscan.lib.port;
+package com.example.ipscan.lib.async;
 
 import android.util.Log;
 
-import com.example.ipscan.lib.IPAddress;
+import com.example.ipscan.lib.helpers.IPAddress;
 import com.example.ipscan.lib.result.PortScanResult;
 import com.example.ipscan.lib.Const;
 
