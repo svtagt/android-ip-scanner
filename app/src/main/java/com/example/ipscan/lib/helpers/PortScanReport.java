@@ -14,18 +14,18 @@ public class PortScanReport {
   public static final String portIsOpen = "open";
   public static final String portIsTimedOut = "timed_out";
 
-  public static String[] init(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
+  public static String[] init(Host hostFrom, Host hostTo, int portFrom, int portTo) {
     int portOffset = portTo - portFrom + 1;
-    int hostsRangeSize = IPAddress.range(hostFrom, hostTo);
+    int hostsRangeSize = Host.range(hostFrom, hostTo);
     int reportArraySize = portOffset * hostsRangeSize;
 
     Log.d(Const.LOG_TAG, "reportArraySize: " + reportArraySize);
     return new String[reportArraySize];
   }
 
-  public static int measure(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
+  public static int measure(Host hostFrom, Host hostTo, int portFrom, int portTo) {
     int portOffset = portTo - portFrom + 1;
-    int hostsRangeSize = IPAddress.range(hostFrom, hostTo);
+    int hostsRangeSize = Host.range(hostFrom, hostTo);
     int reportArraySize = portOffset * hostsRangeSize;
 
     Log.d(Const.LOG_TAG, "reportArraySize: " + reportArraySize);
@@ -33,7 +33,7 @@ public class PortScanReport {
   }
 
 
-  public static String add(IPAddress host, int port, String status, String banner) {
+  public static String add(Host host, int port, String status, String banner) {
 //    StringBuilder sb = new StringBuilder();
 //    sb.append(host);
 //    sb.append(";");

@@ -1,8 +1,10 @@
 package com.example.ipscan.lib.utils;
 
+import com.example.ipscan.lib.helpers.CIDR;
+import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 
-import java.lang.reflect.Array;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class ParamsParser {
@@ -41,9 +43,9 @@ public class ParamsParser {
   public static boolean[] extractPorts(String paramsStr) {
     boolean[] resultBoolArr = new boolean[65536];
     String portsStr = getArgVal(paramsStr, TYPE_PORTS);
-    String [] portsArray = portsStr.split(SEPARATOR);
+    String[] portsArray = portsStr.split(SEPARATOR);
 
-    for (int i=0; i<portsArray.length; i++) {
+    for (int i = 0; i < portsArray.length; i++) {
       if (!portsArray[i].contains("-")) {
         //this it is single port
         resultBoolArr[Integer.valueOf(portsArray[i])] = true;
@@ -53,7 +55,7 @@ public class ParamsParser {
         int rangePortFrom = Integer.valueOf(rangePortsArr[0]);
         int rangePortTo = Integer.valueOf(rangePortsArr[1]);
 
-        for (int j=rangePortFrom; j<=rangePortTo; j++) {
+        for (int j = rangePortFrom; j <= rangePortTo; j++) {
           resultBoolArr[j] = true;
         }
       }
@@ -61,23 +63,75 @@ public class ParamsParser {
     return resultBoolArr;
   }
 
+  public static String extractHosts(String paramsStr) {
+    return getArgVal(paramsStr, TYPE_HOSTS);
+  }
+
   public static ArrayList<PortRange> makePortRangesList(boolean[] portsArr) {
     ArrayList<PortRange> resultList = new ArrayList<>();
 
     int portFrom = -1;
     boolean rangeBeginFound = false;
-    for (int i=1; i<portsArr.length; i++) {
+    for (int i = 1; i < portsArr.length; i++) {
       if (!rangeBeginFound && portsArr[i]) {
         portFrom = i;
         rangeBeginFound = true;
       }
-      
+
       if (rangeBeginFound && !portsArr[i]) {
-        resultList.add(new PortRange(portFrom, i-1));
+        resultList.add(new PortRange(portFrom, i - 1));
         rangeBeginFound = false;
       }
     }
 
+    return resultList;
+  }
+
+  public static ArrayList<Host> makeHostsList(String hostsStr) {
+    ArrayList<Host> resultList = new ArrayList<>();
+    String[] hostsArray = hostsStr.split(SEPARATOR);
+
+    for (int i = 0; i < hostsArray.length; i++) {
+      if (Host.isRange(hostsArray[i])) {
+        //it is range
+        String[] rangeHostsArr = hostsArray[i].split("-");
+        Host rangeHostFrom = new Host(rangeHostsArr[0]);
+        Host rangeHostTo = new Host(rangeHostsArr[1]);
+        for (Host host = rangeHostFrom; host.lte(rangeHostTo); host = host.next()) {
+          resultList.add(host);
+        }
+        continue;
+      }
+
+      if (hostsArray[i].contains("/")) {
+        //it is CIDR format
+        try {
+          CIDR cidr = new CIDR(hostsArray[i]);
+          Host cidrHostFrom = cidr.getHostFrom();
+          Host cidrHostTo = cidr.getHostTo();
+
+//          Log.e(Const.LOG_TAG,
+//            "CIDR: " + hostsArray[i] +
+//              " cidrHostFrom: " + cidrHostFrom.toString() +
+//              " cidrHostTo: " + cidrHostTo.toString() +
+//              " count: " + Host.countBetween(cidrHostFrom, cidrHostTo));
+
+          for (Host host = cidrHostFrom; host.lte(cidrHostTo); host = host.next()) {
+            resultList.add(host);
+          }
+        } catch (UnknownHostException e) {
+          e.printStackTrace();
+        }
+        continue;
+      }
+
+
+      if (Host.isValid(hostsArray[i])) {
+        resultList.add(new Host(hostsArray[i]));
+        continue;
+      }
+    }
+    //TODO
     return resultList;
   }
 }

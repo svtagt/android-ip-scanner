@@ -11,11 +11,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.services.ScanHostsService;
-import com.example.ipscan.lib.utils.ParamsParser;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
   private Button btnStartService;
@@ -27,14 +23,14 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    ArrayList<PortRange> portRanges = ParamsParser.makePortRangesList(ParamsParser.extractPorts("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,30-100,8080,29,1-10,12-20"));
+//    String paramsStr = "-h 192.168.1.1,192.168.5.0/24  -p 1,2,91,30-100,8080,29,1-10,12-20";
+//    ArrayList<PortRange> portRanges = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
+//    ArrayList<Host> hosts = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
 
     askPermissions();
 
     setupUi();
     bindUi();
-
-
 
   }
 

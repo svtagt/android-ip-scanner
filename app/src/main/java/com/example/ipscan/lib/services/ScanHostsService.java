@@ -7,7 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.helpers.IPAddress;
+import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.PortScanReportModel;
 import com.example.ipscan.lib.async.ScanHostsRunnable;
@@ -26,8 +26,8 @@ public class ScanHostsService extends Service {
   private long finishTime;
   private boolean serviceIsBusy;
 
-  IPAddress hostFrom;
-  IPAddress hostTo;
+  Host hostFrom;
+  Host hostTo;
 
   private PortScanReportModel portScanReportModel;
   ArrayList<String> resultData;
@@ -67,8 +67,8 @@ public class ScanHostsService extends Service {
           serviceIsBusy = true;
           startTime = System.nanoTime();
 
-          hostFrom = new IPAddress(hostFromStr);
-          hostTo = new IPAddress(hostToStr);
+          hostFrom = new Host(hostFromStr);
+          hostTo = new Host(hostToStr);
 
 //          portScanReportModel = new PortScanReportModel(hostFrom, hostTo, portFrom, portTo);
 //          resultData = new ArrayList<>(PortScanReport.measure(hostFrom, hostTo, portFrom, portTo));
@@ -86,21 +86,21 @@ public class ScanHostsService extends Service {
               public void portWasTimedOut(String host, int portNumber) {
                 currentItem++;
 //                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
-                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsTimedOut, null));
+                resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsTimedOut, null));
               }
 
               @Override
               public void foundClosedPort(String host, int portNumber) {
                 currentItem++;
 //                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
-                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsClosed, null));
+                resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsClosed, null));
               }
 
               @Override
               public void foundOpenPort(String host, int portNumber, String banner) {
                 currentItem++;
 //                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host + ", port: " + portNumber + ", banner: " + banner);
-                resultData.add(PortScanReport.add(new IPAddress(host), portNumber, PortScanReport.portIsOpen, banner));
+                resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsOpen, banner));
               }
 
               @Override
