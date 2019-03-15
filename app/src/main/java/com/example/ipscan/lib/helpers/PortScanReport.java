@@ -1,6 +1,8 @@
-package com.example.ipscan.lib;
+package com.example.ipscan.lib.helpers;
 
 import android.util.Log;
+
+import com.example.ipscan.lib.Const;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,30 +10,33 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class PortScanReport {
-  public static final String portIsClosed = "CLOSED";
-  public static final String portIsOpen = "OPEN";
-  public static final String portIsTimedOut = "TIMED_OUT";
+  public static final String portIsClosed = "closed";
+  public static final String portIsOpen = "open";
+  public static final String portIsTimedOut = "timed_out";
 
-  public static String[] init(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
+  public static String[] init(Host hostFrom, Host hostTo, int portFrom, int portTo) {
     int portOffset = portTo - portFrom + 1;
-    int hostsRangeSize = IPAddress.range(hostFrom, hostTo);
+    int hostsRangeSize = Host.range(hostFrom, hostTo);
     int reportArraySize = portOffset * hostsRangeSize;
 
     Log.d(Const.LOG_TAG, "reportArraySize: " + reportArraySize);
     return new String[reportArraySize];
   }
 
-  public static int measure(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
-    int portOffset = portTo - portFrom + 1;
-    int hostsRangeSize = IPAddress.range(hostFrom, hostTo);
-    int reportArraySize = portOffset * hostsRangeSize;
+  public static long measure(ArrayList<Host> hostsToScan, ArrayList<PortRange> portRangesToScan) {
 
-    Log.d(Const.LOG_TAG, "reportArraySize: " + reportArraySize);
-    return reportArraySize;
+    int portsCount = 0;
+    for (int i=0; i<portRangesToScan.size(); i++) {
+      portRangesToScan.get(i).print();
+      Log.e(Const.LOG_TAG, "!!!" + portRangesToScan.get(i).length());
+      portsCount+=portRangesToScan.get(i).length();
+    }
+    System.out.println("portsCount: " + portsCount);
+    return hostsToScan.size() * portsCount;
   }
 
 
-  public static String add(IPAddress host, int port, String status, String banner) {
+  public static String add(Host host, int port, String status, String banner) {
 //    StringBuilder sb = new StringBuilder();
 //    sb.append(host);
 //    sb.append(";");

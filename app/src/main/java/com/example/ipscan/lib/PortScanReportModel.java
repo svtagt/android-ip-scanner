@@ -2,6 +2,8 @@ package com.example.ipscan.lib;
 
 import android.util.Log;
 
+import com.example.ipscan.lib.helpers.Host;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -18,18 +20,18 @@ public class PortScanReportModel {
 
   private int portFrom;
   private int portTo;
-  private IPAddress hostFrom;
-  private IPAddress hostTo;
+  private Host hostFrom;
+  private Host hostTo;
 
   private int timeout;
   private long duration;
 
-  public PortScanReportModel(IPAddress hostFrom, IPAddress hostTo, int portFrom, int portTo) {
+  public PortScanReportModel(Host hostFrom, Host hostTo, int portFrom, int portTo) {
     this.portFrom = portFrom;
     this.portTo = portTo;
 
     this.portOffset = portTo - portFrom + 1;
-    this.hostsRangeSize = IPAddress.range(hostFrom, hostTo);
+    this.hostsRangeSize = Host.range(hostFrom, hostTo);
 
     this.hostFrom = hostFrom;
     this.hostTo = hostTo;
@@ -40,21 +42,21 @@ public class PortScanReportModel {
     }
   }
 
-  private void set(IPAddress host, int port, String value) {
+  private void set(Host host, int port, String value) {
     int indexOfPort = port - portFrom;
-    int indexOfHost = IPAddress.countBetween(this.hostFrom, host);
+    int indexOfHost = Host.countBetween(this.hostFrom, host);
     this.data[indexOfPort][indexOfHost] = value;
   }
 
-  public void markAsClosed(IPAddress host, int port) {
+  public void markAsClosed(Host host, int port) {
     this.set(host, port, this.portIsClosed);
   }
 
-  public void markAsTimedOut(IPAddress host, int port) {
+  public void markAsTimedOut(Host host, int port) {
     this.set(host, port, this.portIsTimedOut);
   }
 
-  public void markAsOpen(IPAddress host, int port, String banner) {
+  public void markAsOpen(Host host, int port, String banner) {
     String bannerStr = banner != null ? banner : this.noBanner;
     this.set(host, port, bannerStr);
   }
@@ -121,8 +123,8 @@ public class PortScanReportModel {
     }
 
     sb.append("Port #;");
-    for (IPAddress ipAddress = hostFrom; ipAddress.lte(hostTo); ipAddress = ipAddress.next()) {
-      sb.append(ipAddress.toString());
+    for (Host host = hostFrom; host.lte(hostTo); host = host.next()) {
+      sb.append(host.toString());
       sb.append(";");
     }
     sb.append('\n');

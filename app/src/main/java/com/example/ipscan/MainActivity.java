@@ -8,24 +8,30 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.RadioButton;
+
+import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.services.ScanService;
 
 public class MainActivity extends AppCompatActivity {
-  private Class targetActivityClass;
+  private Button btnStartService;
+  private Button btnStopService;
 
-  private Button btnNext;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
+//    String paramsStr = "-h 192.168.1.1,192.168.5.0/24  -p 1,2,91,30-100,8080,29,1-10,12-20";
+//    ArrayList<PortRange> portRanges = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
+//    ArrayList<Host> hosts = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
+
     askPermissions();
 
     setupUi();
     bindUi();
+
   }
 
   private void askPermissions() {
@@ -43,41 +49,22 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void setupUi() {
-    btnNext = findViewById(R.id.btnNext);
+    btnStartService = findViewById(R.id.btnStartService);
+    btnStopService = findViewById(R.id.btnStopService);
   }
 
   private void bindUi() {
-    btnNext.setOnClickListener(l -> {
-      if (targetActivityClass != null) {
-        startActivity(new Intent(MainActivity.this, targetActivityClass));
-      }
+    btnStartService.setOnClickListener(l -> {
+      Intent intent = new Intent(this, ScanService.class);
+
+      String paramsStr = "-h 62.109.9.90-62.109.9.120 -p 1-1024";
+      intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
+      startService(intent);
+    });
+    btnStopService.setOnClickListener(l -> {
+      stopService(new Intent(this, ScanService.class));
     });
   }
 
-  public void onRadioButtonClicked(View view) {
-    boolean checked = ((RadioButton) view).isChecked();
-    btnNext.setEnabled(true);
-    switch(view.getId()) {
-      case R.id.rbSingleHost: {
-        if (checked){
-          targetActivityClass = SingleHostActivity.class;
-        }
-        break;
-      }
-
-      case R.id.rbHostRange: {
-        if (checked){
-          targetActivityClass = HostRangeActivity.class;
-        }
-        break;
-      }
-
-      case R.id.rbThroughService: {
-        if (checked){
-          targetActivityClass = ThroughServiceActivity.class;
-        }
-        break;
-      }
-    }
-  }
 }
+

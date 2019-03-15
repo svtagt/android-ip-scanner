@@ -13,9 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ThroughServiceActivity"></activity>
-        <activity android:name=".HostRangeActivity" />
-        <activity android:name=".SingleHostActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +22,7 @@
         </activity>
 
         <service
-            android:name=".lib.service.ScanHostsService"
+            android:name=".lib.services.ScanService"
             android:description="@string/scan_hosts_service_description"
             android:exported="false"/>
     </application>

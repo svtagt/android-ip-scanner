@@ -7,7 +7,7 @@ import com.example.ipscan.lib.Const;
 
 import java.io.File;
 
-public class ExportUtils {
+public class Reports {
   /* Checks if external storage is available for read and write */
   public static boolean isExternalStorageWritable() {
     String state = Environment.getExternalStorageState();
@@ -33,8 +33,10 @@ public class ExportUtils {
     return folder;
   }
 
-  public static String generateDocName(String hostFrom, String hostTo,
-                                       int portFrom, int portTo) {
-    return hostFrom + "-" + hostTo + "(" + portFrom + "-" + portTo + ").csv";
+  public static String generateDocName(String str) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(str);
+    sb.append(".csv");
+    return sb.toString();
   }
 }

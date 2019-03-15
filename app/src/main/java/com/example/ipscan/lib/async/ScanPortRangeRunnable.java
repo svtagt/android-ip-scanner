@@ -1,7 +1,9 @@
-package com.example.ipscan.lib.port;
+package com.example.ipscan.lib.async;
 
 import android.util.SparseArray;
 
+import com.example.ipscan.lib.helpers.Host;
+import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.result.PortScanResult;
 
 import java.io.BufferedReader;
@@ -15,26 +17,23 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.channels.IllegalBlockingModeException;
 
-public class ScanPortsRunnable implements Runnable {
-  private String ip;
-  private int startPort;
-  private int stopPort;
+public class ScanPortRangeRunnable implements Runnable {
+  private Host host;
+  private PortRange portRange;
   private int timeout;
   private final WeakReference<PortScanResult> delegate;
 
   /**
    * Constructor to set the necessary data to perform a port scan
    *
-   * @param ip        IP address
-   * @param startPort Port to start scanning at
-   * @param stopPort  Port to stop scanning at
+   * @param host       IP address
+   * @param portRange Port to start scanning at
    * @param timeout   Socket timeout
    * @param delegate  Called when this chunk of ports has finished scanning
    */
-  public ScanPortsRunnable(String ip, int startPort, int stopPort, int timeout, WeakReference<PortScanResult> delegate) {
-    this.ip = ip;
-    this.startPort = startPort;
-    this.stopPort = stopPort;
+  public ScanPortRangeRunnable(Host host, PortRange portRange, int timeout, WeakReference<PortScanResult> delegate) {
+    this.host = host;
+    this.portRange = portRange;
     this.timeout = timeout;
     this.delegate = delegate;
   }
@@ -45,25 +44,29 @@ public class ScanPortsRunnable implements Runnable {
   @Override
   public void run() {
     PortScanResult portScanResult = delegate.get();
+    if (portScanResult == null) {
+      return;
+    }
+
+    int startPort = this.portRange.getPortFrom();
+    int stopPort = this.portRange.getPortTo();
+
     for (int i = startPort; i <= stopPort; i++) {
-      if (portScanResult == null) {
-        return;
-      }
 
       Socket socket = new Socket();
       try {
         socket.setReuseAddress(true);
         socket.setTcpNoDelay(true);
-        socket.connect(new InetSocketAddress(ip, i), timeout);
+        socket.connect(new InetSocketAddress(this.host.toString(), i), timeout);
       } catch (IllegalBlockingModeException | IllegalArgumentException e) {
         portScanResult.processFinish(e);
         continue;
       } catch (SocketTimeoutException e) {
-        portScanResult.portWasTimedOut(ip, i);
+        portScanResult.portWasTimedOut(this.host.toString(), i);
         portScanResult.processItem();
         continue;
       } catch (IOException e) {
-        portScanResult.foundClosedPort(ip, i);
+        portScanResult.foundClosedPort(this.host.toString(), i);
         portScanResult.processItem();
         continue; // Connection failures mean that the port isn't open.
       }
@@ -78,14 +81,14 @@ public class ScanPortsRunnable implements Runnable {
           data = parseSSH(buffered);
         } else if (i == 80 || i == 443 || i == 8080) {
           PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
-          data = parseHTTP(buffered, out);
+          data = parseHTTP(host.toString(), buffered, out);
 
         }
       } catch (IOException e) {
         portScanResult.processFinish(e);
       } finally {
         portData.put(i, data);
-        portScanResult.foundOpenPort(ip, i, data);
+        portScanResult.foundOpenPort(this.host.toString(), i, data);
         portScanResult.processItem();
         try {
           socket.close();
@@ -119,8 +122,8 @@ public class ScanPortsRunnable implements Runnable {
    * @return HTTP banner
    * @throws IOException
    */
-  private String parseHTTP(BufferedReader reader, PrintWriter writer) throws IOException {
-    writer.println("GET / HTTP/1.1\r\nHost: " + ip + "\r\n");
+  private String parseHTTP(String host, BufferedReader reader, PrintWriter writer) throws IOException {
+    writer.println("GET / HTTP/1.1\r\nHost: " + host + "\r\n");
     char[] buffer = new char[256];
     reader.read(buffer, 0, buffer.length);
     writer.close();
