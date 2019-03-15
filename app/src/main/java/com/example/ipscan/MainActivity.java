@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
     setupUi();
     bindUi();
 
-    Log.d(Constant.LOG_TAG, "PORTS: '"  + ParamsParser.getPortsStr("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,3-1024,8080") + "'");
+//    Log.d(Constant.LOG_TAG, "TYPE_PORTS: '"  + ParamsParser.getArgVal("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,3-1024,8080", ParamsParser.TYPE_PORTS) + "'");
+//    Log.d(Constant.LOG_TAG, "TYPE_HOSTS: '"  + ParamsParser.getArgVal("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,3-1024,8080", ParamsParser.TYPE_HOSTS) + "'");
+    ParamsParser.extractPorts("-h 192.168.1.1,192.168.5.0/24,95.24.0.0-95.30.255.255  -p 1,2,91,30-100,8080,29");
   }
 
   private void askPermissions() {
