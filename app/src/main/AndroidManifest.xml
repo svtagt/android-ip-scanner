@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ipscan">
+    package="com.example.ipscan"
+    android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!--TODO: check this permission danger level. Need or not ask it ?-->
+    <uses-permission android:name="android.permission.QUICKBOOT_POWERON" />
 
 
     <application
@@ -22,9 +27,22 @@
         </activity>
 
         <service
-            android:name=".lib.services.ScanService"
-            android:description="@string/scan_hosts_service_description"
+            android:name=".lib.services.NetworkService"
+            android:description="@string/network_service_description"
             android:exported="false"/>
+        <service
+            android:name=".lib.services.ScanService"
+            android:description="@string/scan_service_description"
+            android:exported="false"/>
+
+        <!--TODO Think! There are no activities in the library, so after installation the user cannot run app at least once-->
+        <receiver android:name=".lib.SystemBootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

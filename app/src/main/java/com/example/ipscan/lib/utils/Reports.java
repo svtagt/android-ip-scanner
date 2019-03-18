@@ -33,7 +33,7 @@ public class Reports {
     return folder;
   }
 
-  public static String makeReportName(String str) {
+  public static String generateDocName(String str) {
     StringBuilder sb = new StringBuilder();
     sb.append(str);
     sb.append(".csv");

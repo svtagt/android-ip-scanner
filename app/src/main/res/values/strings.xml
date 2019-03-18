@@ -15,10 +15,12 @@
     <string name="start_way_2">Start (method 2)</string>
 
     <string name="through_service">Through Service</string>
-    <string name="start_service">Start Service</string>
+    <string name="start_networking_service">Start Networking Service</string>
+    <string name="start_service">Start Scan Service with test params</string>
     <string name="add_scan_job">Add Scan Job</string>
     <string name="stop_service">Stop Service</string>
-    <string name="scan_hosts_service_description">A service that scans a certain range of ip addresses and ports in a separate thread</string>
+    <string name="scan_service_description">A service that scans a certain range of ip addresses and ports in a separate thread</string>
+    <string name="network_service_description">A service that </string>
 
 
 </resources>

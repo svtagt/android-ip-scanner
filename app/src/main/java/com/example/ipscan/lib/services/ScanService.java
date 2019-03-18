@@ -1,10 +1,15 @@
 package com.example.ipscan.lib.services;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.ipscan.MainActivity;
+import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
@@ -56,6 +61,23 @@ public class ScanService extends Service {
         //check availability of external storage
         if (Reports.isExternalStorageWritable()) {
           if (hostsToScan.size() > 0 && portRangesToScan.size() > 0) {
+            //need show foreground notification
+
+            Intent resultIntent = new Intent(this, MainActivity.class);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
+              resultIntent, 0);
+
+            Notification notification =
+              new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("My notification")
+                .setContentText("Hello World!")
+                .setContentIntent(resultPendingIntent)
+                .setOngoing(true)
+                .build();
+
+            startForeground(Const.ONGOING_NOTIFICATION_ID, notification);
+
             serviceIsBusy = true;
             totalItems = PortScanReport.measure(hostsToScan, portRangesToScan);
             currentItem = 0;
@@ -83,16 +105,15 @@ public class ScanService extends Service {
                 @Override
                 public void foundOpenPort(Host host, int portNumber, String banner) {
                   currentItem++;
-                  Log.d(Const.LOG_TAG,
-                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
-                      + ", port: " + portNumber + ", banner: " + banner);
-
+//                  Log.d(Const.LOG_TAG,
+//                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
+//                      + ", port: " + portNumber + ", banner: " + banner);
                   resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsOpen, banner));
                 }
 
                 @Override
                 public void processItem() {
-//                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
+                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
                 }
 
                 @Override
@@ -101,10 +122,12 @@ public class ScanService extends Service {
                   long duration = (finishTime - startTime) / 1000000;
                   Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-                  fileForResults = new File(Reports.getReportsDir(), Reports.makeReportName(paramsStr));
+                  fileForResults = new File(Reports.getReportsDir(), Reports.generateDocName(paramsStr));
                   PortScanReport.write(resultData, fileForResults);
 
                   serviceIsBusy = false;
+                  stopForeground(true);
+                  stopSelf(startId);
                 }
               }
             ));
@@ -120,8 +143,7 @@ public class ScanService extends Service {
       Log.e(Const.LOG_TAG, "ScanService service is busy!!!!");
     }
 
-
-    return START_NOT_STICKY;
+    return START_STICKY;
   }
 
   @Override
@@ -132,8 +154,9 @@ public class ScanService extends Service {
 
   @Override
   public void onDestroy() {
-    // The service is no longer used and is being destroyed
+    stopForeground(true);
+    stopSelf();
+    serviceIsBusy = false;
     Log.d(Const.LOG_TAG, "ScanService onDestroy");
   }
-
 }
