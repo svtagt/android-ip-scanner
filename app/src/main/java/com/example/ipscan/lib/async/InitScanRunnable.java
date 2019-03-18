@@ -11,16 +11,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class ScanInitRunnable implements Runnable {
+public class InitScanRunnable implements Runnable {
   private ArrayList<PortRange> portRangesToScan;
   private ArrayList<Host> hostsToScan;
-
   private int timeout;
   private final WeakReference<ScanHandler> delegate;
-
   private ExecutorService es;
 
-  public ScanInitRunnable(ArrayList<Host> hostsToScan, ArrayList<PortRange> portRangesToScan,
+  public InitScanRunnable(ArrayList<Host> hostsToScan, ArrayList<PortRange> portRangesToScan,
                           int timeout, ScanHandler scanHandler) {
     this.hostsToScan = hostsToScan;
     this.portRangesToScan = portRangesToScan;
@@ -36,7 +34,7 @@ public class ScanInitRunnable implements Runnable {
       for (int i=0; i<hostsToScan.size(); i++) {
         for (int j=0; j<portRangesToScan.size(); j++) {
           for (int k=portRangesToScan.get(j).getPortFrom(); k<portRangesToScan.get(j).getPortTo(); k++) {
-            es.execute(new ScanSinglePortRunnable(hostsToScan.get(i), k, timeout, delegate));
+            es.execute(new ScanSingleHostPortRunnable(hostsToScan.get(i), k, timeout, delegate));
           }
         }
       }

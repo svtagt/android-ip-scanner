@@ -4,6 +4,7 @@ import android.util.SparseArray;
 
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.result.ScanHandler;
+import com.example.ipscan.lib.utils.HttpUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.channels.IllegalBlockingModeException;
 
-public class ScanSinglePortRunnable implements Runnable {
+public class ScanSingleHostPortRunnable implements Runnable {
   private Host host;
   private int port;
   private int timeout;
@@ -25,12 +26,12 @@ public class ScanSinglePortRunnable implements Runnable {
   /**
    * Constructor to set the necessary data to perform a port scan
    *
-   * @param host       IP address
-   * @param port Port to start scanning at
+   * @param host      IP address
+   * @param port      Port to start scanning at
    * @param timeout   Socket timeout
    * @param delegate  Called when this chunk of ports has finished scanning
    */
-  public ScanSinglePortRunnable(Host host, int port, int timeout, WeakReference<ScanHandler> delegate) {
+  public ScanSingleHostPortRunnable(Host host, int port, int timeout, WeakReference<ScanHandler> delegate) {
     this.host = host;
     this.port = port;
     this.timeout = timeout;
@@ -70,11 +71,10 @@ public class ScanSinglePortRunnable implements Runnable {
       InputStreamReader input = new InputStreamReader(socket.getInputStream(), "UTF-8");
       BufferedReader buffered = new BufferedReader(input);
       if (port == 22) {
-        data = parseSSH(buffered);
+        data = HttpUtils.parseSSH(buffered);
       } else if (port == 80 || port == 443 || port == 8080) {
         PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
-        data = parseHTTP(host.toString(), buffered, out);
-
+        data = HttpUtils.parseHTTP(host.toString(), buffered, out);
       }
     } catch (IOException e) {
       scanHandler.processFinish(e);
@@ -89,51 +89,5 @@ public class ScanSinglePortRunnable implements Runnable {
         scanHandler.processFinish(e);
       }
     }
-  }
-
-  /**
-   * Tries to determine the SSH version used.
-   *
-   * @param reader Reads SSH version from the connected socket
-   * @return SSH banner
-   * @throws IOException
-   */
-  private String parseSSH(BufferedReader reader) throws IOException {
-    try {
-      return reader.readLine();
-    } finally {
-      reader.close();
-    }
-  }
-
-  /**
-   * Tries to determine what web server is used
-   *
-   * @param reader Reads headers to determine server type
-   * @param writer Sends HTTP request to get a response to parse
-   * @return HTTP banner
-   * @throws IOException
-   */
-  private String parseHTTP(String host, BufferedReader reader, PrintWriter writer) throws IOException {
-    writer.println("GET / HTTP/1.1\r\nHost: " + host + "\r\n");
-    char[] buffer = new char[256];
-    reader.read(buffer, 0, buffer.length);
-    writer.close();
-    reader.close();
-    String data = new String(buffer).toLowerCase();
-
-    if (data.contains("apache") || data.contains("httpd")) {
-      return "Apache";
-    }
-
-    if (data.contains("iis") || data.contains("microsoft")) {
-      return "IIS";
-    }
-
-    if (data.contains("nginx")) {
-      return "NGINX";
-    }
-
-    return null;
   }
 }

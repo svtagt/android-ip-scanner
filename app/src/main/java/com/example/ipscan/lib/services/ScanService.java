@@ -6,7 +6,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.async.ScanInitRunnable;
+import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
@@ -61,7 +61,7 @@ public class ScanService extends Service {
             currentItem = 0;
             resultData = new ArrayList<>((int) totalItems);
             startTime = System.nanoTime();
-            es.execute(new ScanInitRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
+            es.execute(new InitScanRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
               new ScanHandler() {
                 @Override
                 public <T extends Throwable> void processFinish(T err) {
@@ -101,7 +101,7 @@ public class ScanService extends Service {
                   long duration = (finishTime - startTime) / 1000000;
                   Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
 
-                  fileForResults = new File(Reports.getReportsDir(), Reports.generateDocName(paramsStr));
+                  fileForResults = new File(Reports.getReportsDir(), Reports.makeReportName(paramsStr));
                   PortScanReport.write(resultData, fileForResults);
 
                   serviceIsBusy = false;
