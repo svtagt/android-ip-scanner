@@ -6,11 +6,11 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.async.ScanRunnable;
+import com.example.ipscan.lib.async.ScanInitRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
-import com.example.ipscan.lib.result.PortScanResult;
+import com.example.ipscan.lib.result.ScanHandler;
 import com.example.ipscan.lib.utils.ParamsParser;
 import com.example.ipscan.lib.utils.Reports;
 
@@ -35,26 +35,24 @@ public class ScanService extends Service {
 
   long totalItems = 0;
   long currentItem;
+
   @Override
   public void onCreate() {
-    // The service is being created
     Log.d(Const.LOG_TAG, "ScanService onCreate");
     es = Executors.newFixedThreadPool(1);
     serviceIsBusy = false;
-
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    // The service is starting, due to a call to startService()
-
+    Log.d(Const.LOG_TAG, "ScanService onStartCommand");
     if (!serviceIsBusy) {
       //get params string and parse it
       this.paramsStr = intent.getStringExtra(Const.EXTRA_SCAN_PARAMS);
       if (paramsStr != null) {
-        //parse params
         this.portRangesToScan = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
         this.hostsToScan = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
+
         //check availability of external storage
         if (Reports.isExternalStorageWritable()) {
           if (hostsToScan.size() > 0 && portRangesToScan.size() > 0) {
@@ -63,32 +61,33 @@ public class ScanService extends Service {
             currentItem = 0;
             resultData = new ArrayList<>((int) totalItems);
             startTime = System.nanoTime();
-            es.execute(new ScanRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
-              new PortScanResult() {
+            es.execute(new ScanInitRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
+              new ScanHandler() {
                 @Override
                 public <T extends Throwable> void processFinish(T err) {
                   Log.e(Const.LOG_TAG, "ERROR! : " + err.toString());
                 }
 
                 @Override
-                public void portWasTimedOut(String host, int portNumber) {
+                public void portWasTimedOut(Host host, int portNumber) {
                   currentItem++;
-//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsTimedOut, null));
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsTimedOut, null));
                 }
 
                 @Override
-                public void foundClosedPort(String host, int portNumber) {
+                public void foundClosedPort(Host host, int portNumber) {
                   currentItem++;
-//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsClosed, null));
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsClosed, null));
                 }
 
                 @Override
-                public void foundOpenPort(String host, int portNumber, String banner) {
+                public void foundOpenPort(Host host, int portNumber, String banner) {
                   currentItem++;
-                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host + ", port: " + portNumber + ", banner: " + banner);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsOpen, banner));
+                  Log.d(Const.LOG_TAG,
+                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
+                      + ", port: " + portNumber + ", banner: " + banner);
+
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsOpen, banner));
                 }
 
                 @Override
@@ -121,7 +120,7 @@ public class ScanService extends Service {
       Log.e(Const.LOG_TAG, "ScanService service is busy!!!!");
     }
 
-    Log.d(Const.LOG_TAG, "ScanService onStartCommand");
+
     return START_NOT_STICKY;
   }
 

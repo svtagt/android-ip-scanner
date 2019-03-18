@@ -3,7 +3,7 @@ package com.example.ipscan.lib.async;
 import android.util.SparseArray;
 
 import com.example.ipscan.lib.helpers.Host;
-import com.example.ipscan.lib.result.PortScanResult;
+import com.example.ipscan.lib.result.ScanHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class ScanSinglePortRunnable implements Runnable {
   private Host host;
   private int port;
   private int timeout;
-  private final WeakReference<PortScanResult> delegate;
+  private final WeakReference<ScanHandler> delegate;
 
   /**
    * Constructor to set the necessary data to perform a port scan
@@ -30,7 +30,7 @@ public class ScanSinglePortRunnable implements Runnable {
    * @param timeout   Socket timeout
    * @param delegate  Called when this chunk of ports has finished scanning
    */
-  public ScanSinglePortRunnable(Host host, int port, int timeout, WeakReference<PortScanResult> delegate) {
+  public ScanSinglePortRunnable(Host host, int port, int timeout, WeakReference<ScanHandler> delegate) {
     this.host = host;
     this.port = port;
     this.timeout = timeout;
@@ -42,8 +42,8 @@ public class ScanSinglePortRunnable implements Runnable {
    */
   @Override
   public void run() {
-    PortScanResult portScanResult = delegate.get();
-    if (portScanResult == null) {
+    ScanHandler scanHandler = delegate.get();
+    if (scanHandler == null) {
       return;
     }
     Socket socket = new Socket();
@@ -52,15 +52,15 @@ public class ScanSinglePortRunnable implements Runnable {
       socket.setTcpNoDelay(true);
       socket.connect(new InetSocketAddress(this.host.toString(), port), timeout);
     } catch (IllegalBlockingModeException | IllegalArgumentException e) {
-      portScanResult.processFinish(e);
+      scanHandler.processFinish(e);
       return;
     } catch (SocketTimeoutException e) {
-      portScanResult.portWasTimedOut(this.host.toString(), port);
-      portScanResult.processItem();
+      scanHandler.portWasTimedOut(this.host, port);
+      scanHandler.processItem();
       return;
     } catch (IOException e) {
-      portScanResult.foundClosedPort(this.host.toString(), port);
-      portScanResult.processItem();
+      scanHandler.foundClosedPort(this.host, port);
+      scanHandler.processItem();
       return;
     }
 
@@ -77,16 +77,16 @@ public class ScanSinglePortRunnable implements Runnable {
 
       }
     } catch (IOException e) {
-      portScanResult.processFinish(e);
+      scanHandler.processFinish(e);
     } finally {
       portData.put(port, data);
-      portScanResult.foundOpenPort(this.host.toString(), port, data);
-      portScanResult.processItem();
+      scanHandler.foundOpenPort(this.host, port, data);
+      scanHandler.processItem();
       try {
         socket.close();
       } catch (IOException e) {
         // Something's really wrong if we can't close the socket...
-        portScanResult.processFinish(e);
+        scanHandler.processFinish(e);
       }
     }
   }

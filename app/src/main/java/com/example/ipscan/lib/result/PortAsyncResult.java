@@ -1,5 +1,7 @@
 package com.example.ipscan.lib.result;
 
+import com.example.ipscan.lib.helpers.Host;
+
 public interface PortAsyncResult {
   /**
    * Delegate to handle timed out ports
@@ -7,7 +9,7 @@ public interface PortAsyncResult {
    * @param host
    * @param portNumber
    */
-  void portWasTimedOut(String host, int portNumber);
+  void portWasTimedOut(Host host, int portNumber);
 
   /**
    * Delegate to handle closed ports
@@ -15,7 +17,7 @@ public interface PortAsyncResult {
    * @param host
    * @param portNumber
    */
-  void foundClosedPort(String host, int portNumber);
+  void foundClosedPort(Host host, int portNumber);
 
   /**
    * Delegate to handle opened ports
@@ -24,7 +26,7 @@ public interface PortAsyncResult {
    * @param portNumber
    * @param banner
    */
-  void foundOpenPort(String host, int portNumber, String banner);
+  void foundOpenPort(Host host, int portNumber, String banner);
 
   /**
    * Delegate to handle that the new one port was processed
