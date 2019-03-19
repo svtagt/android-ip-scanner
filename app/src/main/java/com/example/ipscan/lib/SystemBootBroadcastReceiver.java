@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.ipscan.lib.services.NetworkService;
+
 public class SystemBootBroadcastReceiver extends BroadcastReceiver {
   public SystemBootBroadcastReceiver() {
 
@@ -14,6 +16,9 @@ public class SystemBootBroadcastReceiver extends BroadcastReceiver {
   public void onReceive(Context context, Intent intent) {
     if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
       Log.d(Const.LOG_TAG, "ACTION_BOOT_COMPLETED !");
+      Intent startIntent = new Intent(context, NetworkService.class);
+      startIntent.setAction(Const.ACTION_START_SERVICE);
+      context.startService(startIntent);
     }
   }
 

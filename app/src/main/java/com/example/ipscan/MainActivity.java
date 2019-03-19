@@ -13,7 +13,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.services.MyService;
+import com.example.ipscan.lib.services.NetworkService;
 import com.example.ipscan.lib.services.ScanService;
 
 import java.util.List;
@@ -29,11 +29,13 @@ public class MainActivity extends AppCompatActivity {
     setContentView(R.layout.activity_main);
 
     askPermissions();
+    startNetworkService();
 
     setupUi();
     bindUi();
   }
 
+  //TODO check situation when network service receive new task, but permissions has NOT already been granted
   private void askPermissions() {
     if (ContextCompat.checkSelfPermission(MainActivity.this,
       Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -66,9 +68,7 @@ public class MainActivity extends AppCompatActivity {
       stopService(new Intent(this, ScanService.class));
     });
     btnTest.setOnClickListener(l -> {
-      Intent startIntent = new Intent(getApplicationContext(), MyService.class);
-      startIntent.setAction(Const.ACTION_START_SERVICE);
-      startService(startIntent);
+      stopService(new Intent(this, NetworkService.class));
     });
   }
 
@@ -95,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
     } catch (Exception e) {
       Log.e("exc" , String.valueOf(e));
     }
+  }
+
+  private void startNetworkService() {
+    Intent startIntent = new Intent(getApplicationContext(), NetworkService.class);
+    startIntent.setAction(Const.ACTION_START_SERVICE);
+    startService(startIntent);
   }
 }
 
