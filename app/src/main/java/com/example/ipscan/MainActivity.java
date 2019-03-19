@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     super.onStart();
   }
 
-
   //TODO check situation when network service receive new task, but permissions has NOT already been granted
   private void askPermissions() {
     if (ContextCompat.checkSelfPermission(MainActivity.this,
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void startNetworkService() {
     Intent startIntent = new Intent(getApplicationContext(), NetworkService.class);
-    startIntent.setAction(Const.ACTION_START_SERVICE);
+    startIntent.setAction(Const.ACTION_START_NETWORK_SERVICE);
     startService(startIntent);
   }
 }

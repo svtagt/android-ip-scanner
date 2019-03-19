@@ -5,7 +5,8 @@ public class Const {
 
   public static final String EXTRA_SCAN_PARAMS = "hostFrom";
   public static final String REPORTS_DIR_NAME = "IPScanReports";
-  public static final String ACTION_START_SERVICE = "ACTION_START_SERVICE";
+  public static final String ACTION_START_NETWORK_SERVICE = "ACTION_START_NETWORK_SERVICE";
+  public static final String ACTION_SET_NETWORK_SERVICE_ALARM = "ACTION_SET_NETWORK_SERVICE_ALARM";
 
   public static final int MAX_PORT_VALUE = 65535;
   public static final int MIN_PORT_VALUE = 1;

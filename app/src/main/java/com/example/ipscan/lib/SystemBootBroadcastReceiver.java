@@ -17,7 +17,7 @@ public class SystemBootBroadcastReceiver extends BroadcastReceiver {
     if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
       Log.d(Const.LOG_TAG, "ACTION_BOOT_COMPLETED !");
       Intent startIntent = new Intent(context, NetworkService.class);
-      startIntent.setAction(Const.ACTION_START_SERVICE);
+      startIntent.setAction(Const.ACTION_START_NETWORK_SERVICE);
       context.startService(startIntent);
     }
   }
