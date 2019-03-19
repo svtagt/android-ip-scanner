@@ -5,6 +5,7 @@ public class Const {
 
   public static final String EXTRA_SCAN_PARAMS = "hostFrom";
   public static final String REPORTS_DIR_NAME = "IPScanReports";
+  public static final String ACTION_START_SERVICE = "ACTION_START_SERVICE";
 
   public static final int MAX_PORT_VALUE = 65535;
   public static final int MIN_PORT_VALUE = 1;
@@ -13,4 +14,5 @@ public class Const {
   //TODO: don't use fixed value
   public static final int NUM_THREADS_FOR_PORT_SCAN = 500;
   public static final int ONGOING_NOTIFICATION_ID = 1;
+  public static final String CHANNEL_ID = "IPSCAN_CHANNEL_ID";
 }

@@ -1,9 +1,12 @@
 package com.example.ipscan.lib.services;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -62,21 +65,7 @@ public class ScanService extends Service {
         if (Reports.isExternalStorageWritable()) {
           if (hostsToScan.size() > 0 && portRangesToScan.size() > 0) {
             //need show foreground notification
-
-            Intent resultIntent = new Intent(this, MainActivity.class);
-            PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
-              resultIntent, 0);
-
-            Notification notification =
-              new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
-                .setContentIntent(resultPendingIntent)
-                .setOngoing(true)
-                .build();
-
-            startForeground(Const.ONGOING_NOTIFICATION_ID, notification);
+            goToForegroundMode();
 
             serviceIsBusy = true;
             totalItems = PortScanReport.measure(hostsToScan, portRangesToScan);
@@ -105,15 +94,15 @@ public class ScanService extends Service {
                 @Override
                 public void foundOpenPort(Host host, int portNumber, String banner) {
                   currentItem++;
-//                  Log.d(Const.LOG_TAG,
-//                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
-//                      + ", port: " + portNumber + ", banner: " + banner);
+                  Log.d(Const.LOG_TAG,
+                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
+                      + ", port: " + portNumber + ", banner: " + banner);
                   resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsOpen, banner));
                 }
 
                 @Override
                 public void processItem() {
-                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
+//                  Log.d(Const.LOG_TAG, "Processed: " + currentItem + "/" + totalItems);
                 }
 
                 @Override
@@ -144,6 +133,39 @@ public class ScanService extends Service {
     }
 
     return START_STICKY;
+  }
+
+  private void goToForegroundMode() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      CharSequence name = getString(R.string.channel_name);
+      String description = getString(R.string.channel_description);
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      NotificationChannel channel = new NotificationChannel(Const.CHANNEL_ID, name, importance);
+      channel.setDescription(description);
+      // Register the channel with the system; you can't change the importance
+      // or other notification behaviors after this
+      NotificationManager notificationManager = getSystemService(NotificationManager.class);
+      notificationManager.createNotificationChannel(channel);
+    }
+
+    Intent resultIntent = new Intent(this, MainActivity.class);
+    PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
+      resultIntent, 0);
+
+
+    Notification notification =
+      new NotificationCompat.Builder(this)
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setContentTitle("My notification")
+        .setContentText("Hello World!")
+        .setContentIntent(resultPendingIntent)
+        .setOngoing(true)
+        .setChannelId(Const.CHANNEL_ID)
+        .build();
+
+    startForeground(Const.ONGOING_NOTIFICATION_ID, notification);
   }
 
   @Override

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.services.MyService;
 import com.example.ipscan.lib.services.ScanService;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
   private Button btnStartService;
   private Button btnStopService;
+  private Button btnTest;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +52,23 @@ public class MainActivity extends AppCompatActivity {
   private void setupUi() {
     btnStartService = findViewById(R.id.btnStartService);
     btnStopService = findViewById(R.id.btnStopService);
+    btnTest = findViewById(R.id.btnTest);
   }
 
   private void bindUi() {
     btnStartService.setOnClickListener(l -> {
       Intent intent = new Intent(this, ScanService.class);
-      String paramsStr = "-h 62.109.9.97-62.109.9.99 -p 1-1024";
+      String paramsStr = "-h 62.109.9.96-62.109.9.110 -p 1-1024";
       intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
       startService(intent);
     });
     btnStopService.setOnClickListener(l -> {
       stopService(new Intent(this, ScanService.class));
+    });
+    btnTest.setOnClickListener(l -> {
+      Intent startIntent = new Intent(getApplicationContext(), MyService.class);
+      startIntent.setAction(Const.ACTION_START_SERVICE);
+      startService(startIntent);
     });
   }
 

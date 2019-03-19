@@ -21,6 +21,9 @@
     <string name="stop_service">Stop Service</string>
     <string name="scan_service_description">A service that scans a certain range of ip addresses and ports in a separate thread</string>
     <string name="network_service_description">A service that </string>
+    <string name="test">test</string>
+    <string name="channel_name">Channel name</string>
+    <string name="channel_description">Channel description</string>
 
 
 </resources>
