@@ -17,6 +17,7 @@ import com.example.ipscan.MainActivity;
 import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.applied.DeviceInfo;
+import com.example.ipscan.lib.helpers.Http;
 
 
 public class NetworkService extends Service {
@@ -128,5 +129,6 @@ public class NetworkService extends Service {
 
   private void handleAlarm() {
     Log.d(Const.LOG_TAG, "handleAlarm called!!!");
+    Http.test();
   }
 }
