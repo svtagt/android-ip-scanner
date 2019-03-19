@@ -35,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
     bindUi();
   }
 
+  @Override
+  protected void onStart() {
+    super.onStart();
+  }
+
+
   //TODO check situation when network service receive new task, but permissions has NOT already been granted
   private void askPermissions() {
     if (ContextCompat.checkSelfPermission(MainActivity.this,

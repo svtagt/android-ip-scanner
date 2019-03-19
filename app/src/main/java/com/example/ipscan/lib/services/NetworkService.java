@@ -48,7 +48,9 @@ public class NetworkService extends Service {
 
 
   void startServiceWithNotification() {
-    if (isServiceRunning) return;
+    if (isServiceRunning) {
+      return;
+    }
     isServiceRunning = true;
 
     Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
@@ -77,4 +79,5 @@ public class NetworkService extends Service {
     stopSelf();
     isServiceRunning = false;
   }
+
 }
