@@ -1,4 +1,4 @@
-package com.example.ipscan.lib.utils;
+package com.example.ipscan.lib.applied;
 
 import android.os.Environment;
 import android.util.Log;

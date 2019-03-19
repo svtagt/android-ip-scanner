@@ -1,6 +1,5 @@
 package com.example.ipscan.lib.services;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,7 +8,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -18,6 +16,7 @@ import android.util.Log;
 import com.example.ipscan.MainActivity;
 import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.applied.DeviceInfo;
 
 
 public class NetworkService extends Service {
@@ -26,8 +25,7 @@ public class NetworkService extends Service {
 
   private AlarmManager alarmMgr;
   private PendingIntent alarmIntent;
-  ConnectivityManager connectivityManager;
-  ActivityManager activityManager;
+  private DeviceInfo deviceInfo;
 
   @Override
   public void onCreate() {
@@ -43,11 +41,7 @@ public class NetworkService extends Service {
       , System.currentTimeMillis()
       , 60 * 1000, alarmIntent);
     Log.d(Const.LOG_TAG, "Alarm was set");
-
-    connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-
-    collectDeviceInfo();
+    deviceInfo = new DeviceInfo(getApplicationContext());
   }
 
   @Override
@@ -134,23 +128,5 @@ public class NetworkService extends Service {
 
   private void handleAlarm() {
     Log.d(Const.LOG_TAG, "handleAlarm called!!!");
-  }
-
-  private void collectDeviceInfo() {
-    //Anything lower than 4 cpu's  would be consider a slower processing device.
-    int cpuCount = Runtime.getRuntime().availableProcessors();
-    Log.d(Const.LOG_TAG, "cpuCount: " + cpuCount);
-    //this generally checks and return true for devices with lower than 1GB memory
-    boolean isLowRamdevice = activityManager.isLowRamDevice();
-    Log.d(Const.LOG_TAG, "isLowRamDevice: " + isLowRamdevice);
-
-    String deviceFullName = Build.MANUFACTURER
-      + " " + Build.MODEL + " " + Build.VERSION.RELEASE
-      + " " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
-    Log.d(Const.LOG_TAG, "deviceFullName: " + deviceFullName);
-  }
-
-  private String getNetworkType() {
-    return connectivityManager.getActiveNetworkInfo().getTypeName();
   }
 }

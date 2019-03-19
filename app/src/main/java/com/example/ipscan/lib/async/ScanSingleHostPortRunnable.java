@@ -4,7 +4,7 @@ import android.util.SparseArray;
 
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.result.ScanHandler;
-import com.example.ipscan.lib.utils.HttpUtils;
+import com.example.ipscan.lib.applied.HttpUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

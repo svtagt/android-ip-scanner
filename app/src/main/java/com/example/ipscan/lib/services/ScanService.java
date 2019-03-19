@@ -19,8 +19,8 @@ import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.result.ScanHandler;
-import com.example.ipscan.lib.utils.ParamsParser;
-import com.example.ipscan.lib.utils.Reports;
+import com.example.ipscan.lib.applied.ParamsParser;
+import com.example.ipscan.lib.applied.Reports;
 
 import java.io.File;
 import java.util.ArrayList;
