@@ -1,4 +1,4 @@
-package com.example.ipscan.lib.utils;
+package com.example.ipscan.lib.applied;
 
 import com.example.ipscan.lib.helpers.CIDR;
 import com.example.ipscan.lib.helpers.Host;

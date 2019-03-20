@@ -1,18 +1,26 @@
 package com.example.ipscan.lib.services;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.example.ipscan.MainActivity;
+import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.async.ScanRunnable;
+import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
-import com.example.ipscan.lib.result.PortScanResult;
-import com.example.ipscan.lib.utils.ParamsParser;
-import com.example.ipscan.lib.utils.Reports;
+import com.example.ipscan.lib.result.ScanHandler;
+import com.example.ipscan.lib.applied.ParamsParser;
+import com.example.ipscan.lib.applied.Reports;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,60 +43,61 @@ public class ScanService extends Service {
 
   long totalItems = 0;
   long currentItem;
+
   @Override
   public void onCreate() {
-    // The service is being created
     Log.d(Const.LOG_TAG, "ScanService onCreate");
     es = Executors.newFixedThreadPool(1);
     serviceIsBusy = false;
-
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    // The service is starting, due to a call to startService()
-
+    Log.d(Const.LOG_TAG, "ScanService onStartCommand");
     if (!serviceIsBusy) {
       //get params string and parse it
       this.paramsStr = intent.getStringExtra(Const.EXTRA_SCAN_PARAMS);
       if (paramsStr != null) {
-        //parse params
         this.portRangesToScan = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
         this.hostsToScan = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
+
         //check availability of external storage
         if (Reports.isExternalStorageWritable()) {
           if (hostsToScan.size() > 0 && portRangesToScan.size() > 0) {
+            //need show foreground notification
+            goToForegroundMode();
+
             serviceIsBusy = true;
             totalItems = PortScanReport.measure(hostsToScan, portRangesToScan);
             currentItem = 0;
             resultData = new ArrayList<>((int) totalItems);
             startTime = System.nanoTime();
-            es.execute(new ScanRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
-              new PortScanResult() {
+            es.execute(new InitScanRunnable(hostsToScan, portRangesToScan, Const.WAN_SOCKET_TIMEOUT,
+              new ScanHandler() {
                 @Override
                 public <T extends Throwable> void processFinish(T err) {
                   Log.e(Const.LOG_TAG, "ERROR! : " + err.toString());
                 }
 
                 @Override
-                public void portWasTimedOut(String host, int portNumber) {
+                public void portWasTimedOut(Host host, int portNumber) {
                   currentItem++;
-//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") TimedOut - host: " + host + ", port: " + portNumber);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsTimedOut, null));
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsTimedOut, null));
                 }
 
                 @Override
-                public void foundClosedPort(String host, int portNumber) {
+                public void foundClosedPort(Host host, int portNumber) {
                   currentItem++;
-//                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Closed - host: " + host + ", port: " + portNumber);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsClosed, null));
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsClosed, null));
                 }
 
                 @Override
-                public void foundOpenPort(String host, int portNumber, String banner) {
+                public void foundOpenPort(Host host, int portNumber, String banner) {
                   currentItem++;
-                Log.d(Const.LOG_TAG, "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host + ", port: " + portNumber + ", banner: " + banner);
-                  resultData.add(PortScanReport.add(new Host(host), portNumber, PortScanReport.portIsOpen, banner));
+                  Log.d(Const.LOG_TAG,
+                    "REPORT (" + currentItem + "/" + totalItems + ") Open - host: " + host
+                      + ", port: " + portNumber + ", banner: " + banner);
+                  resultData.add(PortScanReport.add(host, portNumber, PortScanReport.portIsOpen, banner));
                 }
 
                 @Override
@@ -106,6 +115,8 @@ public class ScanService extends Service {
                   PortScanReport.write(resultData, fileForResults);
 
                   serviceIsBusy = false;
+                  stopForeground(true);
+                  stopSelf(startId);
                 }
               }
             ));
@@ -121,8 +132,40 @@ public class ScanService extends Service {
       Log.e(Const.LOG_TAG, "ScanService service is busy!!!!");
     }
 
-    Log.d(Const.LOG_TAG, "ScanService onStartCommand");
-    return START_NOT_STICKY;
+    return START_STICKY;
+  }
+
+  private void goToForegroundMode() {
+    // Create the NotificationChannel, but only on API 26+ because
+    // the NotificationChannel class is new and not in the support library
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      CharSequence name = getString(R.string.channel_name);
+      String description = getString(R.string.channel_description);
+      int importance = NotificationManager.IMPORTANCE_DEFAULT;
+      NotificationChannel channel = new NotificationChannel(Const.CHANNEL_ID, name, importance);
+      channel.setDescription(description);
+      // Register the channel with the system; you can't change the importance
+      // or other notification behaviors after this
+      NotificationManager notificationManager = getSystemService(NotificationManager.class);
+      notificationManager.createNotificationChannel(channel);
+    }
+
+    Intent resultIntent = new Intent(this, MainActivity.class);
+    PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
+      resultIntent, 0);
+
+
+    Notification notification =
+      new NotificationCompat.Builder(this)
+        .setSmallIcon(R.mipmap.ic_launcher)
+        .setContentTitle("My notification")
+        .setContentText("Hello World!")
+        .setContentIntent(resultPendingIntent)
+        .setOngoing(true)
+        .setChannelId(Const.CHANNEL_ID)
+        .build();
+
+    startForeground(Const.ONGOING_NOTIFICATION_ID, notification);
   }
 
   @Override
@@ -133,8 +176,9 @@ public class ScanService extends Service {
 
   @Override
   public void onDestroy() {
-    // The service is no longer used and is being destroyed
+    stopForeground(true);
+    stopSelf();
+    serviceIsBusy = false;
     Log.d(Const.LOG_TAG, "ScanService onDestroy");
   }
-
 }

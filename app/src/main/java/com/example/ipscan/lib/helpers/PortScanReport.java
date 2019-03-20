@@ -28,10 +28,8 @@ public class PortScanReport {
     int portsCount = 0;
     for (int i=0; i<portRangesToScan.size(); i++) {
       portRangesToScan.get(i).print();
-      Log.e(Const.LOG_TAG, "!!!" + portRangesToScan.get(i).length());
       portsCount+=portRangesToScan.get(i).length();
     }
-    System.out.println("portsCount: " + portsCount);
     return hostsToScan.size() * portsCount;
   }
 

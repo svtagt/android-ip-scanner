@@ -26,6 +26,6 @@ public class PortRange {
   }
 
   public void print() {
-    Log.d(Const.LOG_TAG, "portFrom: " + portFrom + " portTo: " + portFrom);
+    Log.d(Const.LOG_TAG, "portFrom: " + portFrom + " portTo: " + portTo);
   }
 }
