@@ -10,33 +10,86 @@ public class DeviceInfo {
   private ActivityManager activityManager;
 
   private int cpuCount;
+  private int cpuFrequency;
+  private float cpuBogoMips;
+  private int ramSize;
   private boolean isLowRamDevice;
-  private String deviceFullName;
+  private String deviceManufacturer;
+  private String deviceModel;
+  private String osVer;
+  private String osSdk;
 
   public DeviceInfo(Context ctx) {
     connectivityManager = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
     activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
 
     cpuCount = Runtime.getRuntime().availableProcessors();
+
+    try {
+      cpuFrequency = SystemUtils.getCPUFrequencyMax();
+    } catch (Exception e) {
+      cpuFrequency = -1;
+      e.printStackTrace();
+    }
+
+    try {
+      ramSize = SystemUtils.getMemoryTotal();
+    } catch (Exception e) {
+      ramSize = -1;
+      e.printStackTrace();
+    }
     isLowRamDevice = activityManager.isLowRamDevice();
-    deviceFullName = Build.MANUFACTURER
-      + " " + Build.MODEL + " " + Build.VERSION.RELEASE
-      + " " + Build.VERSION_CODES.class.getFields()[android.os.Build.VERSION.SDK_INT].getName();
+
+    try {
+      cpuBogoMips = SystemUtils.getCPUBogoMips();
+    } catch (Exception e) {
+      cpuBogoMips = -1;
+      e.printStackTrace();
+    }
+
+    deviceManufacturer = Build.MANUFACTURER;
+    deviceModel = Build.MODEL;
+    osVer = Build.VERSION.RELEASE;
+    osSdk = Build.VERSION.SDK;
   }
 
   public int getCpuCount() {
     return cpuCount;
   }
 
-  public boolean getIsLowRamDevice() {
-    return isLowRamDevice;
+  public int getCpuFrequency() {
+    return cpuFrequency;
   }
 
-  public String getDeviceFullName() {
-    return deviceFullName;
+  public int getRamSize() {
+    return ramSize;
+  }
+
+  public String getDeviceManufacturer() {
+    return deviceManufacturer;
+  }
+
+  public String getDeviceModel() {
+    return deviceModel;
+  }
+
+  public String getOsVer() {
+    return osVer;
+  }
+
+  public String getOsSdk() {
+    return osSdk;
+  }
+
+  public float getCpuBogoMips() {
+    return cpuBogoMips;
   }
 
   public String getNetworkType() {
     return connectivityManager.getActiveNetworkInfo().getTypeName();
+  }
+
+  public boolean getIsLowRamDevice() {
+    return isLowRamDevice;
   }
 }

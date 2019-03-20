@@ -33,6 +33,18 @@ public class MainActivity extends AppCompatActivity {
 
     setupUi();
     bindUi();
+
+//    try {
+//      Log.d(Constant.LOG_TAG, "getCPUBogoMips: " + SystemUtils.getCPUBogoMips());
+//      Log.d(Constant.LOG_TAG, "getCPUFrequencyMin: " + SystemUtils.getCPUFrequencyMin());
+//      Log.d(Constant.LOG_TAG, "getCPUFrequencyMax: " + SystemUtils.getCPUFrequencyMax());
+//      Log.d(Constant.LOG_TAG, "getCPUFrequencyMaxScaling: " + SystemUtils.getCPUFrequencyMaxScaling());
+//      Log.d(Constant.LOG_TAG, "getCPUFrequencyMinScaling: " + SystemUtils.getCPUFrequencyMinScaling());
+//      Log.d(Constant.LOG_TAG, "getMemoryTotal: " + SystemUtils.getMemoryTotal());
+//      Log.d(Constant.LOG_TAG, "getMemoryFree: " + SystemUtils.getMemoryFree());
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
   }
 
   @Override
@@ -52,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
     } else {
       Log.d(Constant.LOG_TAG, "Permission WRITE_EXTERNAL_STORAGE has already been granted");
     }
-    
-    showAutostartSettings();
+
+//    showAutostartSettings();
   }
 
   private void setupUi() {
@@ -94,11 +106,11 @@ public class MainActivity extends AppCompatActivity {
       }
 
       List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-      if  (list.size() > 0) {
+      if (list.size() > 0) {
         startActivity(intent);
       }
     } catch (Exception e) {
-      Log.e("exc" , String.valueOf(e));
+      Log.e("exc", String.valueOf(e));
     }
   }
 

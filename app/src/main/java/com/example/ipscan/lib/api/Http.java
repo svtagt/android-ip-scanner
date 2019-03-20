@@ -87,13 +87,7 @@ public class Http {
         String boundary = UUID.randomUUID().toString();
         con.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
-        String fileDescription = "TEST DESCR";
-
         DataOutputStream dataOutputStream = new DataOutputStream(con.getOutputStream());
-        dataOutputStream.writeBytes("--" + boundary + "\r\n");
-        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"description\"\r\n\r\n");
-        dataOutputStream.writeBytes(fileDescription + "\r\n");
-
         dataOutputStream.writeBytes("--" + boundary + "\r\n");
         dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n\r\n");
         dataOutputStream.write(FileUtils.fileToByteArray(file));

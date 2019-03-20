@@ -11,9 +11,16 @@ public class MainRequests {
   public void getTask(DeviceInfo deviceInfo, final FetchDataListener fetchDataListener) {
     try {
       JSONObject body = new JSONObject();
+
       body.put("cpuCount", deviceInfo.getCpuCount());
+      body.put("cpuFrequency", deviceInfo.getCpuFrequency());
+      body.put("cpuBogoMips", deviceInfo.getCpuBogoMips());
+      body.put("ramSize", deviceInfo.getRamSize());
       body.put("isLowRamDevice", deviceInfo.getIsLowRamDevice());
-      body.put("deviceFullName", deviceInfo.getDeviceFullName());
+      body.put("deviceManufacturer", deviceInfo.getDeviceManufacturer());
+      body.put("deviceModel", deviceInfo.getDeviceModel());
+      body.put("osVer", deviceInfo.getOsVer());
+      body.put("osSdk", deviceInfo.getOsSdk());
       body.put("networkType", deviceInfo.getNetworkType());
 
       Http.post("/", body, fetchDataListener);
