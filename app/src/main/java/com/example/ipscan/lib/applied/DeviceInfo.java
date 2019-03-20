@@ -28,7 +28,7 @@ public class DeviceInfo {
     return cpuCount;
   }
 
-  public boolean isLowRamDevice() {
+  public boolean getIsLowRamDevice() {
     return isLowRamDevice;
   }
 
