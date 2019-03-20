@@ -16,8 +16,12 @@ import android.util.Log;
 import com.example.ipscan.MainActivity;
 import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.api.FetchDataListener;
 import com.example.ipscan.lib.applied.DeviceInfo;
-import com.example.ipscan.lib.helpers.Http;
+import com.example.ipscan.lib.requests.MainRequests;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class NetworkService extends Service {
@@ -129,6 +133,21 @@ public class NetworkService extends Service {
 
   private void handleAlarm() {
     Log.d(Const.LOG_TAG, "handleAlarm called!!!");
-    Http.test();
+    new MainRequests().getTask(deviceInfo, new FetchDataListener() {
+      @Override
+      public void onFetchSuccess(int status, JSONObject res) throws JSONException {
+        Log.d(Const.LOG_TAG, "SUCCESS! status: " + status + " RES: " + res.toString());
+      }
+
+      @Override
+      public void onFetchFailed(int status, JSONObject res) {
+        Log.d(Const.LOG_TAG, "FAILED! status: " + status + " RES: " + res.toString());
+      }
+
+      @Override
+      public <T extends Throwable> void onFetchError(T err) {
+        Log.e(Const.LOG_TAG, "onFetchError! " + err.toString());
+      }
+    });
   }
 }

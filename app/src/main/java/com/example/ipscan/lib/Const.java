@@ -16,4 +16,6 @@ public class Const {
   public static final int NUM_THREADS_FOR_PORT_SCAN = 500;
   public static final int ONGOING_NOTIFICATION_ID = 1;
   public static final String CHANNEL_ID = "IPSCAN_CHANNEL_ID";
+
+  public static final String API_PREFIX = "https://r.skaro.icu/scanner";
 }
