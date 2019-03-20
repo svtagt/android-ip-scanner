@@ -1,7 +1,5 @@
 package com.example.ipscan.lib.api;
 
-import android.util.Log;
-
 import com.example.ipscan.lib.Const;
 
 import org.json.JSONException;
@@ -42,8 +40,6 @@ public class Http {
         con.setReadTimeout(5000);
 
         int responseStatus = con.getResponseCode();
-        Log.d(Const.LOG_TAG, "responseStatus: " + responseStatus);
-
         if (responseStatus > 299) {
           fetchDataListener.onFetchFailed(responseStatus, parseRes(con.getErrorStream()));
         } else {

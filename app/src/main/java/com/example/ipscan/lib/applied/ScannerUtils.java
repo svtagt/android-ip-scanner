@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class HttpUtils {
+public class ScannerUtils {
   /**
    * Tries to determine the SSH version used.
    *
