@@ -30,7 +30,6 @@ public interface PortAsyncResult {
 
   /**
    * Delegate to handle that the new one port was processed
-   *
    */
   void processItem();
 

@@ -24,7 +24,6 @@ public class DeviceInfo {
     activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
 
     cpuCount = Runtime.getRuntime().availableProcessors();
-
     try {
       cpuFrequency = SystemUtils.getCPUFrequencyMax();
     } catch (Exception e) {

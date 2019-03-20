@@ -16,13 +16,13 @@ import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.api.FetchDataListener;
 import com.example.ipscan.lib.api.Http;
+import com.example.ipscan.lib.applied.ParamsParser;
+import com.example.ipscan.lib.applied.Reports;
 import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.result.ScanHandler;
-import com.example.ipscan.lib.applied.ParamsParser;
-import com.example.ipscan.lib.applied.Reports;
 
 import org.json.JSONException;
 import org.json.JSONObject;

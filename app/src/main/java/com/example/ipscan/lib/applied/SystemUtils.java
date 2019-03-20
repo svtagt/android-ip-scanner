@@ -11,12 +11,11 @@ public class SystemUtils {
   private static final String MEMFREE_PATTERN = "MemFree[\\s]*:[\\s]*(\\d+)[\\s]*kB\n";
 
 
-
   public static float getCPUBogoMips() throws Exception {
     final MatchResult matchResult = SystemUtils.matchSystemFile("/proc/cpuinfo", BOGOMIPS_PATTERN, 1000);
 
     try {
-      if(matchResult.groupCount() > 0) {
+      if (matchResult.groupCount() > 0) {
         return Float.parseFloat(matchResult.group(1));
       } else {
         throw new Exception();
@@ -47,7 +46,7 @@ public class SystemUtils {
     final MatchResult matchResult = SystemUtils.matchSystemFile("/proc/meminfo", MEMTOTAL_PATTERN, 1000);
 
     try {
-      if(matchResult.groupCount() > 0) {
+      if (matchResult.groupCount() > 0) {
         return Integer.parseInt(matchResult.group(1));
       } else {
         throw new Exception();
@@ -61,7 +60,7 @@ public class SystemUtils {
     final MatchResult matchResult = SystemUtils.matchSystemFile("/proc/meminfo", MEMFREE_PATTERN, 1000);
 
     try {
-      if(matchResult.groupCount() > 0) {
+      if (matchResult.groupCount() > 0) {
         return Integer.parseInt(matchResult.group(1));
       } else {
         throw new Exception();
@@ -74,7 +73,7 @@ public class SystemUtils {
   private static int readSystemFileAsInt(final String pSystemFile) throws Exception {
     InputStream in = null;
     try {
-      final Process process = new ProcessBuilder(new String[] { "/system/bin/cat", pSystemFile }).start();
+      final Process process = new ProcessBuilder(new String[]{"/system/bin/cat", pSystemFile}).start();
 
       in = process.getInputStream();
       final String content = readFully(in);
@@ -87,7 +86,7 @@ public class SystemUtils {
   private static final String readFully(final InputStream pInputStream) throws IOException {
     final StringBuilder sb = new StringBuilder();
     final Scanner sc = new Scanner(pInputStream);
-    while(sc.hasNextLine()) {
+    while (sc.hasNextLine()) {
       sb.append(sc.nextLine());
     }
     return sb.toString();
@@ -96,13 +95,13 @@ public class SystemUtils {
   private static MatchResult matchSystemFile(final String pSystemFile, final String pPattern, final int pHorizon) throws Exception {
     InputStream in = null;
     try {
-      final Process process = new ProcessBuilder(new String[] { "/system/bin/cat", pSystemFile }).start();
+      final Process process = new ProcessBuilder(new String[]{"/system/bin/cat", pSystemFile}).start();
 
       in = process.getInputStream();
       final Scanner scanner = new Scanner(in);
 
       final boolean matchFound = scanner.findWithinHorizon(pPattern, pHorizon) != null;
-      if(matchFound) {
+      if (matchFound) {
         return scanner.match();
       } else {
         throw new Exception();
