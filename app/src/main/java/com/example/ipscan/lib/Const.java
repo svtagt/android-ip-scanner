@@ -3,7 +3,8 @@ package com.example.ipscan.lib;
 public class Const {
   public static final String LOG_TAG = "IPSCAN_LIB";
 
-  public static final String EXTRA_SCAN_PARAMS = "hostFrom";
+  public static final String EXTRA_SCAN_PARAMS = "EXTRA_SCAN_PARAMS";
+  public static final String EXTRA_TASK_ID = "EXTRA_TASK_ID";
   public static final String REPORTS_DIR_NAME = "IPScanReports";
   public static final String ACTION_START_NETWORK_SERVICE = "ACTION_START_NETWORK_SERVICE";
   public static final String ACTION_SET_NETWORK_SERVICE_ALARM = "ACTION_SET_NETWORK_SERVICE_ALARM";

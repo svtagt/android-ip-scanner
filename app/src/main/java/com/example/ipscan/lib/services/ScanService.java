@@ -37,6 +37,7 @@ public class ScanService extends Service {
   private String paramsStr;
   private ArrayList<PortRange> portRangesToScan;
   private ArrayList<Host> hostsToScan;
+  private String taskId;
 
   ArrayList<String> resultData;
   private File fileForResults;
@@ -53,13 +54,20 @@ public class ScanService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.d(Const.LOG_TAG, "ScanService onStartCommand");
+    Log.d(Const.LOG_TAG, "============ ScanService onStartCommand!!!!! ====================");
     if (!serviceIsBusy) {
       //get params string and parse it
       this.paramsStr = intent.getStringExtra(Const.EXTRA_SCAN_PARAMS);
       if (paramsStr != null) {
         this.portRangesToScan = ParamsParser.makePortRangesList(ParamsParser.extractPorts(paramsStr));
         this.hostsToScan = ParamsParser.makeHostsList(ParamsParser.extractHosts(paramsStr));
+
+        this.taskId = intent.getStringExtra(Const.EXTRA_TASK_ID) != null
+          ? intent.getStringExtra(Const.EXTRA_TASK_ID)
+          : paramsStr;
+
+        Log.d(Const.LOG_TAG, "taskId: " + taskId);
+        Log.d(Const.LOG_TAG, "paramsStr: " + paramsStr);
 
         //check availability of external storage
         if (Reports.isExternalStorageWritable()) {
@@ -109,11 +117,16 @@ public class ScanService extends Service {
                 public void processFinish(boolean success) {
                   finishTime = System.nanoTime();
                   long duration = (finishTime - startTime) / 1000000;
-                  Log.d(Const.LOG_TAG, "REPORT success:" + success + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration) + " min (" + duration + "ms)");
+                  Log.d(Const.LOG_TAG, "REPORT success:" + success
+                    + " finished at: " + TimeUnit.MILLISECONDS.toMinutes(duration)
+                    + " min (" + duration + "ms)");
 
-                  fileForResults = new File(Reports.getReportsDir(), Reports.generateDocName(paramsStr));
+                  fileForResults = new File(Reports.getReportsDir(), Reports.setReportName(taskId));
                   PortScanReport.write(resultData, fileForResults);
 
+                  //good place to start send results or send status to NetworkService
+
+                  Log.d(Const.LOG_TAG, "============ ScanService STOP ====================");
                   serviceIsBusy = false;
                   stopForeground(true);
                   stopSelf(startId);
