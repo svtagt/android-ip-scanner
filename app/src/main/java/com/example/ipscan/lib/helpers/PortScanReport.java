@@ -26,9 +26,9 @@ public class PortScanReport {
   public static long measure(ArrayList<Host> hostsToScan, ArrayList<PortRange> portRangesToScan) {
 
     int portsCount = 0;
-    for (int i=0; i<portRangesToScan.size(); i++) {
+    for (int i = 0; i < portRangesToScan.size(); i++) {
       portRangesToScan.get(i).print();
-      portsCount+=portRangesToScan.get(i).length();
+      portsCount += portRangesToScan.get(i).length();
     }
     return hostsToScan.size() * portsCount;
   }
@@ -58,7 +58,7 @@ public class PortScanReport {
     try (PrintWriter printWriter = new PrintWriter(file)) {
       Log.d(Const.LOG_TAG, "Begin writing to file...");
       StringBuilder sb = new StringBuilder();
-      for (int i=0; i<resultData.size(); i++) {
+      for (int i = 0; i < resultData.size(); i++) {
         sb.append(resultData.get(i));
       }
 

@@ -137,6 +137,8 @@ public class NetworkService extends Service {
       @Override
       public void onFetchSuccess(int status, JSONObject res) throws JSONException {
         Log.d(Const.LOG_TAG, "SUCCESS! status: " + status + " RES: " + res.toString());
+        startScanService(res.getString("taskId"), res.getString("cmd"));
+//        startScanService(res.getString("taskId"), "-h 62.109.9.97-62.109.9.98 -p 1-1024");
       }
 
       @Override
@@ -149,5 +151,13 @@ public class NetworkService extends Service {
         Log.e(Const.LOG_TAG, "onFetchError! " + err.toString());
       }
     });
+  }
+
+
+  private void startScanService(String taskId, String cmd) {
+    Intent intent = new Intent(this, ScanService.class);
+    intent.putExtra(Const.EXTRA_TASK_ID, taskId);
+    intent.putExtra(Const.EXTRA_SCAN_PARAMS, cmd);
+    startService(intent);
   }
 }

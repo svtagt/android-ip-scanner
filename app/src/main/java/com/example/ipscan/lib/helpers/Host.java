@@ -10,7 +10,7 @@ public class Host {
       throw new IllegalArgumentException();
     }
     value =
-        (Integer.parseInt(parts[0], 10) << (8 * 3)) & 0xFF000000 |
+      (Integer.parseInt(parts[0], 10) << (8 * 3)) & 0xFF000000 |
         (Integer.parseInt(parts[1], 10) << (8 * 2)) & 0x00FF0000 |
         (Integer.parseInt(parts[2], 10) << (8 * 1)) & 0x0000FF00 |
         (Integer.parseInt(parts[3], 10) << (8 * 0)) & 0x000000FF;
@@ -103,14 +103,14 @@ public class Host {
     if (parts.length != 4) {
       return false;
     }
-    
-    for (int i=0; i<parts.length; i++) {
+
+    for (int i = 0; i < parts.length; i++) {
       int val = Integer.parseInt(parts[i]);
-      if (val <0 || val > 255) {
+      if (val < 0 || val > 255) {
         return false;
       }
     }
-    
+
     return true;
   }
 

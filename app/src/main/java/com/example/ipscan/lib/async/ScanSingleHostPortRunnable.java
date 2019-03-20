@@ -2,9 +2,9 @@ package com.example.ipscan.lib.async;
 
 import android.util.SparseArray;
 
+import com.example.ipscan.lib.applied.ScannerUtils;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.result.ScanHandler;
-import com.example.ipscan.lib.applied.HttpUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,10 +26,10 @@ public class ScanSingleHostPortRunnable implements Runnable {
   /**
    * Constructor to set the necessary data to perform a port scan
    *
-   * @param host      IP address
-   * @param port      Port to start scanning at
-   * @param timeout   Socket timeout
-   * @param delegate  Called when this chunk of ports has finished scanning
+   * @param host     IP address
+   * @param port     Port to start scanning at
+   * @param timeout  Socket timeout
+   * @param delegate Called when this chunk of ports has finished scanning
    */
   public ScanSingleHostPortRunnable(Host host, int port, int timeout, WeakReference<ScanHandler> delegate) {
     this.host = host;
@@ -71,10 +71,10 @@ public class ScanSingleHostPortRunnable implements Runnable {
       InputStreamReader input = new InputStreamReader(socket.getInputStream(), "UTF-8");
       BufferedReader buffered = new BufferedReader(input);
       if (port == 22) {
-        data = HttpUtils.parseSSH(buffered);
+        data = ScannerUtils.parseSSH(buffered);
       } else if (port == 80 || port == 443 || port == 8080) {
         PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
-        data = HttpUtils.parseHTTP(host.toString(), buffered, out);
+        data = ScannerUtils.parseHTTP(host.toString(), buffered, out);
       }
     } catch (IOException e) {
       scanHandler.processFinish(e);

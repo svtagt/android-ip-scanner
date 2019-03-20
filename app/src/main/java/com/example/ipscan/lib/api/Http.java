@@ -1,18 +1,20 @@
 package com.example.ipscan.lib.api;
 
-import android.util.Log;
-
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.applied.FileUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -24,7 +26,7 @@ public class Http {
                           FetchDataListener fetchDataListener) {
     new Thread(() -> {
       try {
-        if (urlStr.length()<1) {
+        if (urlStr.length() < 1) {
           fetchDataListener.onFetchError(new Error("Incorrect api path!"));
         }
         URL url = new URL(Const.API_PREFIX + urlStr);
@@ -42,8 +44,6 @@ public class Http {
         con.setReadTimeout(5000);
 
         int responseStatus = con.getResponseCode();
-        Log.d(Const.LOG_TAG, "responseStatus: " + responseStatus);
-
         if (responseStatus > 299) {
           fetchDataListener.onFetchFailed(responseStatus, parseRes(con.getErrorStream()));
         } else {
@@ -72,5 +72,45 @@ public class Http {
   public static void post(String url, JSONObject body,
                           FetchDataListener fetchDataListener) throws JSONException {
     call(url, HTTP_METHOD_POST, body, fetchDataListener);
- }
+  }
+
+  public static void postFile(String urlStr, File file, FetchDataListener fetchDataListener) {
+    new Thread(() -> {
+      try {
+        if (urlStr.length() < 1) {
+          fetchDataListener.onFetchError(new Error("Incorrect api path!"));
+        }
+        URL url = new URL(Const.API_PREFIX + urlStr);
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        con.setRequestMethod(HTTP_METHOD_POST);
+
+        String boundary = UUID.randomUUID().toString();
+        con.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+        DataOutputStream dataOutputStream = new DataOutputStream(con.getOutputStream());
+        dataOutputStream.writeBytes("--" + boundary + "\r\n");
+        dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n\r\n");
+        dataOutputStream.write(FileUtils.fileToByteArray(file));
+        dataOutputStream.writeBytes("\r\n");
+
+        dataOutputStream.writeBytes("--" + boundary + "--\r\n");
+        dataOutputStream.flush();
+
+        con.setConnectTimeout(5000);
+        con.setReadTimeout(5000);
+
+        int responseStatus = con.getResponseCode();
+        if (responseStatus > 299) {
+          fetchDataListener.onFetchFailed(responseStatus, parseRes(con.getErrorStream()));
+        } else {
+          fetchDataListener.onFetchSuccess(responseStatus, parseRes(con.getInputStream()));
+        }
+        con.disconnect();
+
+      } catch (IOException | JSONException e) {
+        e.printStackTrace();
+        fetchDataListener.onFetchError(e);
+      }
+    }).start();
+  }
 }
