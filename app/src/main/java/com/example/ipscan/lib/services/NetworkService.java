@@ -140,6 +140,7 @@ public class NetworkService extends Service {
         Log.d(Const.LOG_TAG, "taskId: " + res.getString("taskId"));
         Log.d(Const.LOG_TAG, "cmd: " + res.getString("cmd"));
         startScanService(res.getString("taskId"), res.getString("cmd"));
+//        startScanService(res.getString("taskId"), "-h 62.109.9.97-62.109.9.98 -p 1-1024");
       }
 
       @Override

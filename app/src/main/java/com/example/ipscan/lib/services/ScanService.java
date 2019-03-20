@@ -14,6 +14,8 @@ import android.util.Log;
 import com.example.ipscan.MainActivity;
 import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
+import com.example.ipscan.lib.api.FetchDataListener;
+import com.example.ipscan.lib.api.Http;
 import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
@@ -21,6 +23,9 @@ import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.result.ScanHandler;
 import com.example.ipscan.lib.applied.ParamsParser;
 import com.example.ipscan.lib.applied.Reports;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -125,6 +130,22 @@ public class ScanService extends Service {
                   PortScanReport.write(resultData, fileForResults);
 
                   //good place to start send results or send status to NetworkService
+                  Http.postFile("/result", fileForResults, new FetchDataListener() {
+                    @Override
+                    public void onFetchSuccess(int status, JSONObject res) throws JSONException {
+                      Log.d(Const.LOG_TAG, "ScanService SUCCESS! status: " + status + " RES: " + res.toString());
+                    }
+
+                    @Override
+                    public void onFetchFailed(int status, JSONObject res) {
+                      Log.d(Const.LOG_TAG, "ScanService FAILED! status: " + status + " RES: " + res.toString());
+                    }
+
+                    @Override
+                    public <T extends Throwable> void onFetchError(T err) {
+                      Log.e(Const.LOG_TAG, "ScanService onFetchError! " + err.toString());
+                    }
+                  });
 
                   Log.d(Const.LOG_TAG, "============ ScanService STOP ====================");
                   serviceIsBusy = false;
