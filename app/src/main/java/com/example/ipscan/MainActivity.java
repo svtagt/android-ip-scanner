@@ -13,23 +13,52 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.services.GetScanJobService;
+import com.example.ipscan.lib.IPScan;
+import com.example.ipscan.lib.services.NetworkingService;
 import com.example.ipscan.lib.services.ScanService;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-  private Button btnStartService;
-  private Button btnStopService;
-  private Button btnTest;
+  private Button btn1;
+  private Button btn2;
+  private Button btn3;
 
+  private IPScan myScanner;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
     askPermissions();
-    startNetworkService();
+
+    myScanner = new IPScan(MainActivity.this);
+
+//    myScanner.scan("-h 62.109.9.96-62.109.9.97 -p 1-501", new BroadcastReceiver() {
+//      @Override
+//      public void onReceive(Context context, Intent intent) {
+//        File reportFile = (File) intent.getExtras().get(Const.EXTRA_REPORT_FILE);
+//        btn1.setEnabled(false);
+//        Http.postFile("/result", reportFile, new FetchDataListener() {
+//          @Override
+//          public void onFetchSuccess(int status, JSONObject res) {
+//            Log.d(Const.LOG_TAG, "MainActivity SUCCESS! status: " + status + " RES: " + res.toString());
+//          }
+//
+//          @Override
+//          public void onFetchFailed(int status, JSONObject res) {
+//            Log.d(Const.LOG_TAG, "MainActivity FAILED! status: " + status + " RES: " + res.toString());
+//          }
+//
+//          @Override
+//          public <T extends Throwable> void onFetchError(T err) {
+//            Log.e(Const.LOG_TAG, "MainActivity onFetchError! " + err.toString());
+//          }
+//        });
+//      }
+//    });
+
+
 
     setupUi();
     bindUi();
@@ -39,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
   protected void onStart() {
     super.onStart();
   }
+
   //TODO check situation when network service receive new task, but permissions has NOT already been granted
   private void askPermissions() {
     if (ContextCompat.checkSelfPermission(MainActivity.this,
@@ -56,20 +86,21 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void setupUi() {
-    btnStartService = findViewById(R.id.btnStartService);
-    btnStopService = findViewById(R.id.btnStopService);
-    btnTest = findViewById(R.id.btnTest);
+    btn1 = findViewById(R.id.btn1);
+    btn2 = findViewById(R.id.btn2);
+    btn3 = findViewById(R.id.btn3);
   }
 
   private void bindUi() {
-    btnStartService.setOnClickListener(l -> {
+    btn1.setOnClickListener(l -> {
       Intent intent = new Intent(this, ScanService.class);
       String paramsStr = "-h 62.109.9.96-62.109.9.110 -p 1-1024";
       intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
       startService(intent);
     });
-    btnStopService.setOnClickListener(l -> stopService(new Intent(this, ScanService.class)));
-    btnTest.setOnClickListener(l -> stopService(new Intent(this, GetScanJobService.class)));
+    btn2.setOnClickListener(l -> myScanner.startWaitingForTasks(MainActivity.this,
+      "https://r.skaro.icu/scanner", 1));
+    btn3.setOnClickListener(l -> stopService(new Intent(this, NetworkingService.class)));
   }
 
   private void showAutostartSettings() {
@@ -95,12 +126,6 @@ public class MainActivity extends AppCompatActivity {
     } catch (Exception e) {
       Log.e("exc", String.valueOf(e));
     }
-  }
-
-  private void startNetworkService() {
-    Intent startIntent = new Intent(getApplicationContext(), GetScanJobService.class);
-    startIntent.setAction(Const.ACTION_START_NETWORK_SERVICE);
-    startService(startIntent);
   }
 }
 

@@ -7,10 +7,10 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnStartService"
+        android:id="@+id/btn1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_service"
+        android:text="@string/single_task"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,23 +18,23 @@
         app:layout_constraintVertical_bias="0.32" />
 
     <Button
-        android:id="@+id/btnStopService"
+        android:id="@+id/btn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/stop_service"
+        android:text="@string/start_waiting_for_tasks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStartService" />
+        app:layout_constraintTop_toBottomOf="@+id/btn1" />
 
     <Button
-        android:id="@+id/btnTest"
+        android:id="@+id/btn3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/test"
+        android:text="@string/stop_waiting_for_tasks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnStopService" />
+        app:layout_constraintTop_toBottomOf="@+id/btn2" />
 
 </android.support.constraint.ConstraintLayout>
