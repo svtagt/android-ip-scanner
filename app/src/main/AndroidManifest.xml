@@ -29,7 +29,7 @@
         </activity>
 
         <service
-            android:name=".lib.services.GetScanJobService"
+            android:name=".lib.services.NetworkingService"
             android:description="@string/network_service_description"
             android:exported="false"/>
         <service
@@ -38,7 +38,7 @@
             android:exported="false"/>
 
         <!--TODO Think! There are no activities in the library, so after installation the user cannot run app at least once-->
-        <receiver android:name=".lib.SystemBootBroadcastReceiver">
+        <receiver android:name=".SystemBootBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
