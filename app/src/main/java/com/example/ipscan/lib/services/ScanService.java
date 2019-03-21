@@ -122,28 +122,25 @@ public class ScanService extends Service {
                   fileForResults = new File(Reports.getReportsDir(), Reports.setReportName(taskId));
                   PortScanReport.write(resultData, fileForResults);
 
-                  //good place to start send results or send status to GetScanJobService
                   Http.postFile("/result", fileForResults, new FetchDataListener() {
                     @Override
                     public void onFetchSuccess(int status, JSONObject res) {
                       Log.d(Const.LOG_TAG, "ScanService SUCCESS! status: " + status + " RES: " + res.toString());
+                      finishWork();
                     }
 
                     @Override
                     public void onFetchFailed(int status, JSONObject res) {
                       Log.d(Const.LOG_TAG, "ScanService FAILED! status: " + status + " RES: " + res.toString());
+                      finishWork();
                     }
 
                     @Override
                     public <T extends Throwable> void onFetchError(T err) {
                       Log.e(Const.LOG_TAG, "ScanService onFetchError! " + err.toString());
+                      finishWork();
                     }
                   });
-
-                  Log.d(Const.LOG_TAG, "============ ScanService STOP ====================");
-                  serviceIsBusy = false;
-                  stopForeground(true);
-                  stopSelf(startId);
                 }
               }
             ));
@@ -165,6 +162,15 @@ public class ScanService extends Service {
   private void goToForegroundMode() {
     startForeground(Const.SCAN_SERVICE_NOTIFICATION_ID, ServiceUtils.createNotification(
       this, R.string.scan_service_title, R.string.scan_service_descr));
+  }
+
+
+
+  private void finishWork() {
+    Log.d(Const.LOG_TAG, "============ ScanService finishWork ====================");
+    serviceIsBusy = false;
+    stopForeground(true);
+    stopSelf();
   }
 
   @Override
