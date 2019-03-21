@@ -11,7 +11,7 @@
     <string name="next">Next</string>
     <string name="url_or_ip">Enter IP</string>
     <string name="def_url">62.109.9.97</string>
-    <string name="please_wait">Please wait...</string>
+    <string name="please_wait">Please wait…</string>
     <string name="start_way_2">Start (method 2)</string>
 
     <string name="through_service">Through Service</string>
@@ -25,5 +25,9 @@
     <string name="channel_name">Channel name</string>
     <string name="channel_description">Channel description</string>
 
+    <string name="scan_service_title">Scanning in progress…</string>
+    <string name="scan_service_descr">Please dont\'t kill the app!</string>
 
+    <string name="get_scan_job_service_title">IP Scanner</string>
+    <string name="get_scan_job_service_descr">Waiting for tasks to scan…</string>
 </resources>

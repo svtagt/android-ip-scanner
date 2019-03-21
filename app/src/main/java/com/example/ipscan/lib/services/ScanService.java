@@ -1,30 +1,23 @@
 package com.example.ipscan.lib.services;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.ipscan.MainActivity;
 import com.example.ipscan.R;
 import com.example.ipscan.lib.Const;
 import com.example.ipscan.lib.api.FetchDataListener;
 import com.example.ipscan.lib.api.Http;
 import com.example.ipscan.lib.applied.ParamsParser;
 import com.example.ipscan.lib.applied.Reports;
+import com.example.ipscan.lib.applied.ServiceUtils;
 import com.example.ipscan.lib.async.InitScanRunnable;
 import com.example.ipscan.lib.helpers.Host;
 import com.example.ipscan.lib.helpers.PortRange;
 import com.example.ipscan.lib.helpers.PortScanReport;
 import com.example.ipscan.lib.result.ScanHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -129,28 +122,25 @@ public class ScanService extends Service {
                   fileForResults = new File(Reports.getReportsDir(), Reports.setReportName(taskId));
                   PortScanReport.write(resultData, fileForResults);
 
-                  //good place to start send results or send status to NetworkService
                   Http.postFile("/result", fileForResults, new FetchDataListener() {
                     @Override
-                    public void onFetchSuccess(int status, JSONObject res) throws JSONException {
+                    public void onFetchSuccess(int status, JSONObject res) {
                       Log.d(Const.LOG_TAG, "ScanService SUCCESS! status: " + status + " RES: " + res.toString());
+                      finishWork();
                     }
 
                     @Override
                     public void onFetchFailed(int status, JSONObject res) {
                       Log.d(Const.LOG_TAG, "ScanService FAILED! status: " + status + " RES: " + res.toString());
+                      finishWork();
                     }
 
                     @Override
                     public <T extends Throwable> void onFetchError(T err) {
                       Log.e(Const.LOG_TAG, "ScanService onFetchError! " + err.toString());
+                      finishWork();
                     }
                   });
-
-                  Log.d(Const.LOG_TAG, "============ ScanService STOP ====================");
-                  serviceIsBusy = false;
-                  stopForeground(true);
-                  stopSelf(startId);
                 }
               }
             ));
@@ -170,36 +160,17 @@ public class ScanService extends Service {
   }
 
   private void goToForegroundMode() {
-    // Create the NotificationChannel, but only on API 26+ because
-    // the NotificationChannel class is new and not in the support library
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      CharSequence name = getString(R.string.channel_name);
-      String description = getString(R.string.channel_description);
-      int importance = NotificationManager.IMPORTANCE_DEFAULT;
-      NotificationChannel channel = new NotificationChannel(Const.CHANNEL_ID, name, importance);
-      channel.setDescription(description);
-      // Register the channel with the system; you can't change the importance
-      // or other notification behaviors after this
-      NotificationManager notificationManager = getSystemService(NotificationManager.class);
-      notificationManager.createNotificationChannel(channel);
-    }
-
-    Intent resultIntent = new Intent(this, MainActivity.class);
-    PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0,
-      resultIntent, 0);
+    startForeground(Const.SCAN_SERVICE_NOTIFICATION_ID, ServiceUtils.createNotification(
+      this, R.string.scan_service_title, R.string.scan_service_descr));
+  }
 
 
-    Notification notification =
-      new NotificationCompat.Builder(this)
-        .setSmallIcon(R.mipmap.ic_launcher)
-        .setContentTitle("My notification")
-        .setContentText("Hello World!")
-        .setContentIntent(resultPendingIntent)
-        .setOngoing(true)
-        .setChannelId(Const.CHANNEL_ID)
-        .build();
 
-    startForeground(Const.ONGOING_NOTIFICATION_ID, notification);
+  private void finishWork() {
+    Log.d(Const.LOG_TAG, "============ ScanService finishWork ====================");
+    serviceIsBusy = false;
+    stopForeground(true);
+    stopSelf();
   }
 
   @Override

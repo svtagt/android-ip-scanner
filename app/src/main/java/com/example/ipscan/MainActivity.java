@@ -13,7 +13,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.ipscan.lib.Const;
-import com.example.ipscan.lib.services.NetworkService;
+import com.example.ipscan.lib.services.GetScanJobService;
 import com.example.ipscan.lib.services.ScanService;
 
 import java.util.List;
@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
   protected void onStart() {
     super.onStart();
   }
-
   //TODO check situation when network service receive new task, but permissions has NOT already been granted
   private void askPermissions() {
     if (ContextCompat.checkSelfPermission(MainActivity.this,
@@ -69,12 +68,8 @@ public class MainActivity extends AppCompatActivity {
       intent.putExtra(Const.EXTRA_SCAN_PARAMS, paramsStr);
       startService(intent);
     });
-    btnStopService.setOnClickListener(l -> {
-      stopService(new Intent(this, ScanService.class));
-    });
-    btnTest.setOnClickListener(l -> {
-      stopService(new Intent(this, NetworkService.class));
-    });
+    btnStopService.setOnClickListener(l -> stopService(new Intent(this, ScanService.class)));
+    btnTest.setOnClickListener(l -> stopService(new Intent(this, GetScanJobService.class)));
   }
 
   private void showAutostartSettings() {
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void startNetworkService() {
-    Intent startIntent = new Intent(getApplicationContext(), NetworkService.class);
+    Intent startIntent = new Intent(getApplicationContext(), GetScanJobService.class);
     startIntent.setAction(Const.ACTION_START_NETWORK_SERVICE);
     startService(startIntent);
   }
